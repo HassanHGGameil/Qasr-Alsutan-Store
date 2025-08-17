@@ -1,0 +1,334 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id             Int         @id @default(autoincrement())
+  name           String?
+  email          String?     @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           Role        @default(USER)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  phone          String?
+  accounts       Account[]
+  sessions       Session[]
+  orders         OrderItem[]
+}
+
+model VerificationToken {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  USER
+  ADMIN
+  AdminOne
+  AdminTwo
+  MANGER
+  OWNER
+}
+
+// ============ HOME Page Structure - START =========================
+
+model Billboard {
+  id        Int      @id @default(autoincrement())
+  label     String
+  imageUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  slug     String    @unique
+  products Product[] @relation("CategoryToProduct")
+
+  titleEn String
+  titleAr String
+
+  subtitleEn String
+  subtitleAr String
+
+  btnEn String
+  btnAr String
+
+  descriptionEn String?
+  descriptionAr String?
+
+  imageUrl    String
+  imageUrlTwo String?
+
+  isFeatured Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Size {
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Color {
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Hero {
+  id         Int     @id @default(autoincrement())
+  titleEn    String
+  titleAr    String
+  subtitleEn String
+  subtitleAr String
+  imageUrl   String?
+
+  btnOneEn String?
+  btnOneAr String?
+
+  btnTwoEn String?
+  btnTwoAr String?
+
+  heroImages HeroImages[]
+  heroWords  HeroWords[]
+
+  isFeatured Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroImages {
+  id        Int      @id @default(autoincrement())
+  heroId    Int
+  hero      Hero     @relation(fields: [heroId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroWords {
+  id        Int      @id @default(autoincrement())
+  wordEn    String
+  wordAr    String
+  heroId    Int
+  hero      Hero     @relation(fields: [heroId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Banner {
+  id           Int            @id @default(autoincrement())
+  nameEn       String
+  nameAr       String
+  titleEn      String
+  titleAr      String
+  subtitleEn   String
+  subtitleAr   String
+  link         String?
+  bannerImages BannerImages[]
+  isFeatured   Boolean        @default(false)
+  isArchived   Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model BannerImages {
+  id        Int      @id @default(autoincrement())
+  bannerId  Int
+  Banner    Banner   @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  slug String @unique
+
+  categoryId Int
+  category   Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
+
+  imageUrl String?
+  images   Images[]
+
+  titleEn    String
+  titleAr    String
+  subtitleEn String
+  subtitleAr String
+
+  btnEn String?
+  btnAr String?
+
+  structureEn String?
+  structureAr String?
+
+  shelfLifeEn String?
+  shelfLifeAr String?
+
+  fillingEn String?
+  fillingAr String?
+
+  storageEn String?
+  storageAr String?
+
+  price Decimal?
+
+  isFeatured Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([categoryId])
+}
+
+model Images {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+// ============ HOME Page Structure - END =========================
+
+// ============ New Page Structure - START =========================
+// ============ New Page Structure - END =========================
+
+// ============ ABOUT Page Structure - START =========================
+// ============ ABOUT Page Structure - END =========================
+
+// ============ Careers Page Structure - START =========================
+// ============ Careers Page Structure - END =========================
+
+// _____________ When Make Ordring  _______________________
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  orderItems    OrderItem[]
+  paymentResult Json?
+
+  isPaid         Boolean         @default(false)
+  status         OrderStatus?    @default(PENDING)
+  deliveryStatus DeliveryStatus?
+  paymentId      Int?            @unique
+  paymentMethod  PaymentMethod?
+
+  phone     String   @default("")
+  address   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id               Int                @id @default(autoincrement())
+  orderId          Int
+  order            Order              @relation(fields: [orderId], references: [id])
+  userId           Int?
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId        Int
+  product          Product            @relation(fields: [productId], references: [id])
+  OrderProductItem OrderProductItem[]
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model OrderProductItem {
+  id          Int       @id @default(autoincrement())
+  nameEn      String
+  nameAr      String
+  orderItemId Int
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  imageUrl    String
+  price       Decimal
+  quantity    Decimal?
+  totalPrice  Decimal?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([orderItemId])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum DeliveryStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+}
+
+enum PaymentMethod {
+  STRIPE
+  PAYPAL
+  PAYMOB
+  WHATSUP
+}
