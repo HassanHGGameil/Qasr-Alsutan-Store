@@ -47,7 +47,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex flex-col justify-between items-start">
             <h3
               id={`food-title-${id}`}
-              className="text-xl font-bold text-gray-900 line-clamp-1"
+              className="text-md lg:text-xl font-bold text-gray-900 line-clamp-1"
             >
               {title}
             </h3>
@@ -63,7 +63,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex justify-between items-center">
             <div className="">
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-gray-900">
+                <span className="text-md lg:text-xl font-bold text-gray-900">
                   ${price.toFixed(2)}
                 </span>
               </div>
