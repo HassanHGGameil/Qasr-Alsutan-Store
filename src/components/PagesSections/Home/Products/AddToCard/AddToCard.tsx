@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { ShoppingCart } from "lucide-react";
 
 interface AddToCartProps {
   product: TProduct;
@@ -39,16 +40,16 @@ const BUTTON_TEXTS = {
     ar: "الحد الأقصى",
   },
   inCart: {
-    en: (count: number) => `Add More (${count})`,
-    ar: (count: number) => `إضافة المزيد (${count})`,
+    en: (count: number) => `(${count})`,
+    ar: (count: number) => `(${count})`,
   },
   default: {
-    en: "Add to Cart",
-    ar: "أضف إلى السلة",
+    en: "",
+    ar: "",
   },
   loading: {
-    en: (count?: number) => `Adding... ${count ? `(${count})` : ""}`,
-    ar: (count?: number) => `جاري الإضافة... ${count ? `(${count})` : ""}`,
+    en: (count?: number) => ` ${count ? `(${count})` : ""}`,
+    ar: (count?: number) => ` ${count ? `(${count})` : ""}`,
   },
 };
 
@@ -116,7 +117,7 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
   };
 
   const buttonClasses = cn(
-    "w-full transition-all duration-300",
+    " transition-all duration-300",
     quantityReachedMax
       ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
       : "bg-red-700 hover:bg-primary-dark",
@@ -124,7 +125,7 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
   );
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full ">
       <Button
         variant="default"
         className={buttonClasses}
@@ -139,7 +140,10 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
             {getLoadingText()}
           </div>
         ) : (
-          getButtonText()
+          <div className="flex items-center gap-2">
+            <ShoppingCart className="h-4 w-4 " />
+            {getButtonText()}
+          </div>
         )}
       </Button>
 

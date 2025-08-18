@@ -15,13 +15,15 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   onClick,
   isActive = false,
 }) => {
-  const { nameEn, nameAr, imageUrl } = categoryItem;
+  const {id, nameEn, nameAr, imageUrl } = categoryItem;
   const locale = useLocale();
   const name = locale === "en" ? nameEn : nameAr;
 
   return (
+    
     <div
-      className={`flex flex-col items-center bg-slate-200  p-4 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
+    key={id}
+      className={`flex flex-col items-center bg-yellow-100 shadow-md mx-2 my-2 p-2 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
         ${
           isActive
             ? "scale-105 opacity-100"
@@ -56,7 +58,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <div className="text-center">
         <h3
-          className={`text-sm font-semibold transition-colors duration-300
+          className={`text-[12px] font-semibold transition-colors duration-300
             ${
               isActive
                 ? "text-primary-600"

@@ -22,8 +22,6 @@ import {
 import { useCart } from "./useCart";
 import {
   Loader2,
-  // CreditCard,
-  // Landmark,
   MessageSquareText,
   Truck,
 } from "lucide-react";
@@ -47,26 +45,19 @@ const translations = {
     fullName: "Full Name",
     phoneNumber: "Phone Number",
     address: "Address",
-    city: "City",
-    zipCode: "ZIP Code",
     subtotal: "Subtotal",
     shipping: "Shipping",
     total: "Total",
     placeOrder: "Place Order",
     clearCart: "Clear Cart",
     processing: "Processing...",
-    paymob: "Paymob",
-    stripe: "Stripe",
     whatsapp: "WhatsApp",
     cash_on_delivery: "CashOnDelivery",
     codDescription: "You'll pay in cash when your order is delivered",
     free: "Free",
     nameError: "Name must be at least 2 characters",
-    emailError: "Invalid email address",
     phoneError: "Invalid phone number",
     addressError: "Address must be at least 5 characters",
-    cityError: "City is required",
-    zipError: "Zip code is required",
     paymentError: "Please select a payment method",
     orderSubmitted: "Order submitted successfully",
     orderError: "Failed to create order",
@@ -83,26 +74,19 @@ const translations = {
     fullName: "الاسم الكامل",
     phoneNumber: "رقم الهاتف",
     address: "العنوان",
-    city: "المدينة",
-    zipCode: "الرمز البريدي",
     subtotal: "المجموع الجزئي",
     shipping: "الشحن",
     total: "المجموع الكلي",
     placeOrder: "تأكيد الطلب",
     clearCart: "تفريغ السلة",
     processing: "جاري المعالجة...",
-    paymob: "باي موب",
-    stripe: "سترايب",
     whatsapp: "واتساب",
     cash_on_delivery: "الدفع عند الاستلام",
     codDescription: "سوف تدفع نقداً عند استلام طلبك",
     free: "مجاني",
     nameError: "يجب أن يكون الاسم مكون من حرفين على الأقل",
-    emailError: "بريد إلكتروني غير صالح",
     phoneError: "رقم هاتف غير صالح",
     addressError: "يجب أن يكون العنوان مكون من 5 أحرف على الأقل",
-    cityError: "المدينة مطلوبة",
-    zipError: "الرمز البريدي مطلوب",
     paymentError: "الرجاء اختيار طريقة الدفع",
     orderSubmitted: "تم تقديم الطلب بنجاح",
     orderError: "فشل إنشاء الطلب",
@@ -113,9 +97,7 @@ const translations = {
 
 const paymentMethods = [
   "CASH_ON_DELIVERY",
-    "WHATSUP",
-  // "PAYMOB",
-  // "STRIPE",
+  "WHATSAPP",
 ] as const;
 type PaymentMethod = (typeof paymentMethods)[number];
 
@@ -142,8 +124,6 @@ export default function CheckoutForm() {
       .min(6, t.phoneError)
       .regex(/^[0-9+\-() ]+$/, t.phoneError),
     address: z.string().min(5, t.addressError),
-    city: z.string().min(2, t.cityError),
-    zipCode: z.string().min(3, t.zipError),
     paymentMethod: z.enum(paymentMethods, {
       required_error: t.paymentError,
     }),
@@ -155,8 +135,6 @@ export default function CheckoutForm() {
       name: "",
       phone: "",
       address: "",
-      city: "",
-      zipCode: "",
     },
   });
 
@@ -206,30 +184,20 @@ export default function CheckoutForm() {
           paymentMethod,
           totalPrice,
         },
-        { headers: { "Content-Type": "application/json"} }
+        { headers: { "Content-Type": "application/json" } }
       );
       switch (paymentMethod) {
-        // case "STRIPE":
-        //   window.location.href = response.data.url;
-        //   break;
-        case "WHATSUP":
+        case "WHATSAPP":
           window.open("https://wa.me/+201204999930", "_blank");
-          // window.location.href = response.data;
-
           toast.success(t.orderSubmitted);
           removeAll();
           router.push("/order/orderSuccess");
-
           break;
-          
         case "CASH_ON_DELIVERY":
           toast.success(t.orderSubmitted);
           removeAll();
           router.push("/order/orderSuccess");
           break;
-        // case "PAYMOB":
-        //   // Handle Paymob payment
-        //   break;
         default:
           throw new Error("Unsupported payment method");
       }
@@ -338,45 +306,6 @@ export default function CheckoutForm() {
                   </FormItem>
                 )}
               />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t.city}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t.city}
-                          {...field}
-                          disabled={isSubmitting}
-                          className={isRTL ? "text-right" : "text-left"}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="zipCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t.zipCode}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t.zipCode}
-                          {...field}
-                          disabled={isSubmitting}
-                          className={isRTL ? "text-right" : "text-left"}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
             </div>
 
             {/* Payment Method Section */}
@@ -396,14 +325,12 @@ export default function CheckoutForm() {
                       t[method.toLowerCase() as keyof typeof translations.en]
                     }
                   >
-                    {method === "WHATSUP" && (
+                    {method === "WHATSAPP" && (
                       <MessageSquareText className="h-6 w-6" />
                     )}
                     {method === "CASH_ON_DELIVERY" && (
                       <Truck className="h-6 w-6" />
                     )}
-                    {/* {method === "PAYMOB" && <Landmark className="h-6 w-6" />}
-                    {method === "STRIPE" && <CreditCard className="h-6 w-6" />} */}
 
                     <span>
                       {method === "CASH_ON_DELIVERY"
@@ -437,14 +364,10 @@ export default function CheckoutForm() {
                   <span>{t.subtotal}</span>
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>{t.shipping}</span>
-                  <span>{cartTotal > 50 ? t.free : "$5.00"}</span>
-                </div>
                 <div className="flex justify-between font-bold pt-2 border-t">
                   <span>{t.total}</span>
                   <span className="text-lg">
-                    ${(cartTotal + (cartTotal > 50 ? 0 : 5)).toFixed(2)}
+                    ${cartTotal.toFixed(2)}
                   </span>
                 </div>
               </div>

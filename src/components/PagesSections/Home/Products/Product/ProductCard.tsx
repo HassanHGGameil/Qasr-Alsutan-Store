@@ -1,18 +1,16 @@
 "use client";
 import {
   Card,
-  CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import AddToCart from "../AddToCard/AddToCard";
 import type TProduct from "@/types/product";
 import DialogPopUp from "@/components/common/Dialog-PopUp/PopUp";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 
 interface ProductCardProps {
@@ -39,7 +37,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
         <DialogPopUp isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
         {/* Food Image with Badge */}
-        <div className="relative aspect-[4/3]">
+        <div className="relative aspect-[4/3] m-5 ">
           <Image
             src={mainImage}
             alt={title}
@@ -52,31 +50,28 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           />
         </div>
 
-        <CardHeader className="p-5 space-y-2">
-          <div className="flex justify-between items-start">
+        <CardHeader className="px-5 ">
+          <div className="flex flex-col justify-between items-start">
             <h3
               id={`food-title-${id}`}
               className="text-xl font-bold text-gray-900 line-clamp-1"
             >
               {title}
             </h3>
-            <div
-              className="flex items-center bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100"
-              aria-label="Food rating"
-            >
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="ml-1 text-sm font-medium text-amber-900">
-                4.8
-              </span>
-            </div>
+            <p className="text-gray-600 line-clamp-1 text-[10px]">{subtitle}</p>
           </div>
-
-          <p className="text-gray-600 line-clamp-2 text-sm">{subtitle}</p>
         </CardHeader>
 
-        <CardContent className="px-5 pb-3">
+        {/* <CardContent className="px-5 pb-3">
+          
+        </CardContent> */}
+      </Link>
+      <CardFooter className="px-5 pb-5 pt-0">
+        <div className="w-full flex items-center gap-3">
+          <AddToCart product={productItem} />
+
           <div className="flex justify-between items-center">
-            <div className="space-y-1">
+            <div className="">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-gray-900">
                   ${price.toFixed(2)}
@@ -84,19 +79,6 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Link>
-      <CardFooter className="px-5 pb-5 pt-0">
-        <div className="w-full flex items-center gap-3">
-          <AddToCart product={productItem} />
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-xl border-amber-300 hover:bg-amber-50 h-12 w-12"
-            aria-label="Add to favorites"
-          >
-            <Heart className="w-5 h-5 text-amber-500" />
-          </Button>
         </div>
       </CardFooter>
     </Card>

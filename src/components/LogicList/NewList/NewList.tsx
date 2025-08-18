@@ -8,15 +8,16 @@ import "swiper/css/pagination";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SliderListProps<T extends Record<string, any>> = {
+
+type SliderListProps<T> = {
   records?: T[];
   renderItem: (itemData: T) => React.ReactNode;
   emptyMessage: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const NewList = <T extends Record<string, any>>({
+type HasId = { id: string };
+
+const NewList = <T extends HasId>({
   records = [],
   renderItem,
 }: SliderListProps<T>): JSX.Element => {
@@ -43,53 +44,44 @@ const NewList = <T extends Record<string, any>>({
   return (
     <div
     dir="ltr"
-      className="relative"
+      className="relative mx-5 lg:mx-20"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
         slidesPerView={2}
-        spaceBetween={10}
         speed={900}
         autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
         breakpoints={{
           340: {
-            slidesPerView: 2,
-            spaceBetween: 10,
+            slidesPerView: 3,
           },
           440: {
-            slidesPerView: 2,
-            spaceBetween: 10,
+            slidesPerView: 3,
           },
           576: {
-            slidesPerView: 2,
-            spaceBetween: 16,
+            slidesPerView: 3,
           },
           // Tablet (768px and up)
           768: {
             slidesPerView: 3,
-            spaceBetween: 16,
           },
           // Large tablet (900px and up)
           900: {
             slidesPerView: 3,
-            spaceBetween: 20,
           },
           // Desktop (1024px and up)
           1024: {
             slidesPerView: 4,
-            spaceBetween: 20,
           },
           // Large desktop (1200px and up)
           1200: {
             slidesPerView: 5,
-            spaceBetween: 24,
           },
           // Extra large desktop (1400px and up)
           1400: {
-            slidesPerView: 5,
-            spaceBetween: 24,
+            slidesPerView: 6,
           }
           
         }}
@@ -102,7 +94,7 @@ const NewList = <T extends Record<string, any>>({
       >
         {records.length > 0 ? (
           records.map((itemData) => (
-            <SwiperSlide key={itemData.slug}>{renderItem(itemData)}</SwiperSlide>
+            <SwiperSlide key={itemData.id}>{renderItem(itemData)}</SwiperSlide>
           ))
         ) : (
           <SwiperSlide>
@@ -114,7 +106,7 @@ const NewList = <T extends Record<string, any>>({
       </Swiper>
 
       <div
-        className={` container  md:block w-full absolute top-[40%] z-10 px-4  ${
+        className={` md:block w-full absolute top-[40%] z-10 px-4  ${
           isHovered
             ? "opacity-100 transition-opacity duration-300 ease-in-out"
             : "opacity-70 transition-opacity duration-300 ease-in-out"

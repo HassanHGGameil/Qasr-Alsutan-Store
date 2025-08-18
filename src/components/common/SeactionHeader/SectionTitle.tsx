@@ -1,3 +1,4 @@
+import { Package, ShoppingCart } from "lucide-react";
 import { useLocale } from "next-intl";
 import { ReactNode } from "react";
 
@@ -29,14 +30,10 @@ const SectionTitle = ({
   center,
   mb = "mb-14",
   className = "",
-  icon,
   iconPosition = "left",
-  underline = false,
-  gradientText = false,
   headingLevel = "h2",
   animate = false,
   titleClassName = "",
-  subtitleClassName = "",
 }: SectionTitleProps) => {
   const language = useLocale();
   const isRTL = language === "ar";
@@ -44,20 +41,20 @@ const SectionTitle = ({
   // Text content
   const title = isRTL ? titleAr : titleEn;
   const subtitle = isRTL ? subtitleAr : subtitleEn;
-  
+
   // Layout classes
-  const alignmentClass = center ? "mx-auto text-center" : isRTL ? "text-right" : "text-left";
+  const alignmentClass = center
+    ? "mx-auto text-center"
+    : isRTL
+    ? "text-right"
+    : "text-left";
   const flexDirection = iconPosition === "top" ? "flex-col" : "flex-row";
-  const iconOrder = iconPosition === "right" ? "order-last" : "order-first";
-  const iconSpacing = iconPosition === "top" ? "mb-4" : isRTL ? "ml-4" : "mr-4";
 
   // Text styling
   const titleSizeClass = "text-3xl sm:text-4xl md:text-[45px]";
-  const underlineClass = underline ? "pb-2 border-b-2 border-primary" : "";
-const gradientClass = gradientText 
-  ? "bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-red-500   dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-purple-500 dark:via-pink-500 dark:to-red-500" 
-  : "";
-    const animationClass = animate ? "animate-fade-in-up" : "";
+  // const underlineClass = underline ? "pb-2 border-b-2 border-primary" : "";
+
+  const animationClass = animate ? "animate-fade-in-up" : "";
 
   // Create the appropriate heading element
   const HeadingTag = headingLevel;
@@ -68,32 +65,25 @@ const gradientClass = gradientText
       style={{ maxWidth: width }}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className={`flex ${flexDirection} items-center ${center ? "justify-center" : ""}`}>
-        {icon && (
-          <div 
-            className={`${iconOrder} ${iconSpacing} ${
-              iconPosition === "top" ? "self-center" : ""
-            } transition-transform hover:scale-110`}
-          >
-            {icon}
+      <div
+        className={`flex ${flexDirection} items-center ${
+          center ? "justify-center" : ""
+        }`}
+      >
+        <div className={``}>
+          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-slate-700 to-slate-700 dark:from-blue-900/30 dark:to-indigo-900/30 px-4 py-2 rounded-full mb-4">
+            <Package className="h-5 w-5 mx-2 text-white dark:text-green-400" />
+            <span className="text-sm font-medium text-white dark:text-green-400">
+              {subtitle}
+            </span>
+            <ShoppingCart className="h-5 w-5 text-white dark:text-green-400" />
           </div>
-        )}
-        
-        <div className={underlineClass}>
-          <HeadingTag 
-            className={`${titleSizeClass} font-bold !leading-tight text-black dark:text-white ${gradientClass}  ${titleClassName}`}
+          <HeadingTag
+            className={`${titleSizeClass} font-bold !leading-tight text-slate-800 dark:text-white   ${titleClassName}`}
             data-testid="section-title"
           >
             {title}
           </HeadingTag>
-          {subtitle && (
-            <p 
-              className={`text-base !leading-relaxed text-gray-600 dark:text-gray-300 md:text-lg mt-2 ${subtitleClassName}`}
-              data-testid="section-subtitle"
-            >
-              {subtitle}
-            </p>
-          )}
         </div>
       </div>
     </div>
