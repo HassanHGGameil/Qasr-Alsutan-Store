@@ -7,8 +7,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
-
-
 type SliderListProps<T> = {
   records?: T[];
   renderItem: (itemData: T) => React.ReactNode;

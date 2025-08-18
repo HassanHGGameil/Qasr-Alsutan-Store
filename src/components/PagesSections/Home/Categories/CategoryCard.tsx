@@ -58,7 +58,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <div className="text-center">
         <h3
-          className={`text-[12px] font-semibold transition-colors duration-300
+          className={`text-[12px] font-semibold transition-colors duration-300 line-clamp-1
             ${
               isActive
                 ? "text-primary-600"

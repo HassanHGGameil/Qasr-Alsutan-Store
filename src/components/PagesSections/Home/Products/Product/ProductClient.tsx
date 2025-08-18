@@ -13,7 +13,7 @@ const ProductClient = async () => {
   );
 
   return (
-    <section className=" dark:bg-slate-800 my-8 py-10 rounded-md shadow-sm">
+    <section className=" dark:bg-slate-800 mb-8 lg:my-8 lg:py-10 rounded-md shadow-sm">
       <div className="container">
         {/*  */}
         <GridList<TProduct>

@@ -39,11 +39,10 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}
-            
           />
         </div>
 
-        <CardHeader className="px-5 ">
+        <CardHeader className="px-5">
           <div className="flex flex-col justify-between items-start">
             <h3
               id={`food-title-${id}`}
@@ -54,16 +53,15 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
             <p className="text-gray-600 line-clamp-1 text-[10px]">{subtitle}</p>
           </div>
         </CardHeader>
-
       </Link>
-      <CardFooter className="px-5 pb-5 pt-0">
+      <CardFooter className="px-5">
         <div className="w-full flex items-center gap-3">
           <AddToCart product={productItem} />
 
           <div className="flex justify-between items-center">
             <div className="">
               <div className="flex items-center gap-2">
-                <span className="text-md lg:text-xl font-bold text-gray-900">
+                <span className="text-sm md:text-md lg:text-xl font-bold text-gray-900">
                   ${price.toFixed(2)}
                 </span>
               </div>
