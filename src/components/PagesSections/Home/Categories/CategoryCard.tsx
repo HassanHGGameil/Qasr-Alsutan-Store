@@ -15,14 +15,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   onClick,
   isActive = false,
 }) => {
-  const {id, nameEn, nameAr, imageUrl } = categoryItem;
+  const { id, nameEn, nameAr, imageUrl } = categoryItem;
   const locale = useLocale();
   const name = locale === "en" ? nameEn : nameAr;
 
   return (
-    
     <div
-    key={id}
+      key={id}
       className={`flex flex-col items-center bg-yellow-100 shadow-md mx-2 my-2 p-2 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
         ${
           isActive
@@ -37,7 +36,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       aria-label={`Select ${name} category`}
     >
       <div
-        className={`relative  h-24 w-24 rounded-full overflow-hidden shadow-lg mb-3 transition-all duration-300
+        className={`relative h-16 w-16 lg:h-24 lg:w-24 rounded-full overflow-hidden shadow-lg mb-3 transition-all duration-300
           ${
             isActive
               ? "ring-4 ring-primary-500"
