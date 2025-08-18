@@ -44,7 +44,7 @@ const NewList = <T extends HasId>({
   return (
     <div
     dir="ltr"
-      className="relative mx-5 lg:mx-20"
+      className="relative md:mx-5 lg:mx-20"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
