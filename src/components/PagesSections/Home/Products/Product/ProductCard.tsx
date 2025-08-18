@@ -1,16 +1,11 @@
 "use client";
-import {
-  Card,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import AddToCart from "../AddToCard/AddToCard";
 import type TProduct from "@/types/product";
 import DialogPopUp from "@/components/common/Dialog-PopUp/PopUp";
-// import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 
 interface ProductCardProps {
@@ -36,8 +31,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
       <Link href={`/products/${id}`}>
         <DialogPopUp isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
-        {/* Food Image with Badge */}
-        <div className="relative aspect-[4/3] m-5 ">
+        <div className="relative aspect-[4/3] m-5">
           <Image
             src={mainImage}
             alt={title}
@@ -45,8 +39,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}
-            placeholder="blur"
-            blurDataURL="/placeholder-food.jpg"
+            
           />
         </div>
 
@@ -62,9 +55,6 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           </div>
         </CardHeader>
 
-        {/* <CardContent className="px-5 pb-3">
-          
-        </CardContent> */}
       </Link>
       <CardFooter className="px-5 pb-5 pt-0">
         <div className="w-full flex items-center gap-3">

@@ -7,15 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebookF,
   FaInstagram,
- 
   FaChevronRight,
   FaTiktok,
 } from "react-icons/fa";
 import { ReactNode } from "react";
 
-// Static assets
 import darklogo from "../../../../public/icons/qasr-alsutan-logo.png";
 import lightlogo from "../../../../public/icons/qasr-alsutan-logo.png";
+
 
 type LocaleString = {
   en: string;
@@ -49,7 +48,6 @@ type SocialLink = {
 type FooterContent = {
   description: LocaleString;
   links: FooterLinkItem[];
-  specialties: FooterLinkItem[];
   contact: ContactInfo;
 };
 
@@ -87,37 +85,42 @@ const SOCIAL_LINKS: SocialLink[] = [
 
 const FOOTER_CONTENT: FooterContent = {
   description: {
-    en: "Join 10,000+ Professionals Who Transformed Their SkillsBecome Part of Dr. Mohamed Sherif's Exclusive Learning Community",
-    ar: "انضم إلى أكثر من 10,000 محترف طوروا مهاراتهم,كن جزءًا من مجتمع د. محمد شريف التعليمي الحصري",
+    en: "Experience authentic Arabian cuisine in an enchanting palace atmosphere. Qasr Al Sultan brings you centuries-old recipes with modern culinary artistry.",
+    ar: "جرب المأكولات العربية الأصيلة في أجواء قصر ساحرة. يقدم لكم قصر السلطان وصفات تعود إلى قرون مع فنون الطهي الحديثة",
   },
   links: [
-    { en: "Home", ar: "الرئسيه", href: "#" },
-    { en: "Courses", ar: "ألكورسات", href: "#courses" },
-    { en: "About", ar: "عن د.محمد شريف", href: "#about" },
-   
+    { en: "Home", ar: "الرئيسية", href: "/" },
+    { en: "Menu", ar: "قائمة الطعام", href: "/menu" },
+    { en: "Gallery", ar: "معرض الصور", href: "/gallery" },
+    { en: "Reservations", ar: "الحجوزات", href: "/reservations" },
+    { en: "About Us", ar: "عن المطعم", href: "/about" },
+    { en: "Contact", ar: "اتصل بنا", href: "/contact" },
   ],
-  specialties: [
-    { en: "Internal Medicine", ar: "الطب الباطني", href: "/specialties/internal" },
-    { en: "Preventive Care", ar: "الرعاية الوقائية", href: "/specialties/preventive" },
-    { en: "Chronic Disease", ar: "الأمراض المزمنة", href: "/specialties/chronic" },
-    { en: "Health Screening", ar: "الفحص الصحي", href: "/specialties/screening" },
-  ],
+
   contact: {
-    email: "info@drmohamedsherif.com",
-    phone: "+20 123 456 7890",
+    email: "reservations@qasralsultan.com",
+    phone: "+966 12 345 6789",
     address: {
-      en: "123 Medical Center, Cairo, Egypt",
-      ar: "123 المركز الطبي، القاهرة، مصر"
+      en: "Al Tahlia Street, Riyadh 12345, Saudi Arabia",
+      ar: "شارع الطليعة، الرياض 12345، المملكة العربية السعودية",
     },
     hours: {
-      en: "Sat-Thu: 9AM - 5PM | Fri: Closed",
-      ar: "السبت-الخميس: 9 صباحاً - 5 مساءً | الجمعة: مغلق"
+      en: "Daily: 12PM - 12AM | Friday Brunch: 1PM-4PM",
+      ar: "يومياً: 12 ظهراً - 12 منتصف الليل | برنش الجمعة: 1-4 عصراً",
     },
   },
 };
 
 // Components
-const FooterLink = ({ item, locale, color = "blue-500" }: { item: FooterLinkItem, locale: 'en' | 'ar', color?: string }) => {
+const FooterLink = ({
+  item,
+  locale,
+  color = "blue-500",
+}: {
+  item: FooterLinkItem;
+  locale: "en" | "ar";
+  color?: string;
+}) => {
   const linkHover = {
     hover: {
       x: locale === "ar" ? -6 : 6,
@@ -143,9 +146,8 @@ const FooterLink = ({ item, locale, color = "blue-500" }: { item: FooterLinkItem
   );
 };
 
-const ContactItem = ({  label, value, href, additional }: ContactItemProps) => (
-  <motion.li className="flex items-start" >
-    
+const ContactItem = ({ label, value, href, additional }: ContactItemProps) => (
+  <motion.li className="flex items-start">
     <div>
       <p className="text-xs text-gray-500 dark:text-blue-200 uppercase tracking-wider">
         {label}
@@ -173,7 +175,7 @@ const ContactItem = ({  label, value, href, additional }: ContactItemProps) => (
 
 const Footer = () => {
   const { resolvedTheme } = useTheme();
-  const locale = useLocale() as 'en' | 'ar';
+  const locale = useLocale() as "en" | "ar";
   const currentYear = new Date().getFullYear();
 
   return (
@@ -189,9 +191,7 @@ const Footer = () => {
           viewport={{ once: true, margin: "-150px" }}
         >
           {/* Brand Column */}
-          <motion.div
-            className="space-y-8 xl:col-span-2 flex flex-col items-center md:items-start"
-          >
+          <motion.div className="space-y-8 xl:col-span-2 flex flex-col items-center md:items-start">
             <Link
               href="/"
               className="inline-block"
@@ -261,7 +261,7 @@ const Footer = () => {
           </motion.div>
 
           {/* Quick Links */}
-          <motion.div  className="space-y-8">
+          <motion.div className="space-y-8">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
               <span className="w-2.5 h-2.5 bg-blue-500 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
               {locale === "en" ? "Quick Links" : "روابط سريعة"}
@@ -277,24 +277,6 @@ const Footer = () => {
               ))}
             </ul>
           </motion.div>
-
-          {/* Specialties */}
-          {/* <motion.div className="space-y-8">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="w-2.5 h-2.5 bg-blue-400 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
-              {locale === "en" ? "Specialties" : "التخصصات"}
-            </h3>
-            <ul className="space-y-4">
-              {FOOTER_CONTENT.specialties.map((specialty) => (
-                <FooterLink
-                  key={specialty.en}
-                  item={specialty}
-                  locale={locale}
-                  color="blue-400"
-                />
-              ))}
-            </ul>
-          </motion.div> */}
 
           {/* Contact Info */}
           <motion.div className="space-y-8">
@@ -313,7 +295,6 @@ const Footer = () => {
                 value={FOOTER_CONTENT.contact.phone}
                 href={`tel:${FOOTER_CONTENT.contact.phone.replace(/\D/g, "")}`}
               />
-              
             </ul>
           </motion.div>
         </motion.div>
@@ -327,7 +308,8 @@ const Footer = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <div className="text-gray-500 dark:text-blue-200 text-sm">
-            &copy; {currentYear} Dr. Mohamed Sherif {locale === "en" ? "| All rights reserved" : "| جميع الحقوق محفوظة"}
+            &copy; {currentYear} Dr. Mohamed Sherif{" "}
+            {locale === "en" ? "| All rights reserved" : "| جميع الحقوق محفوظة"}
           </div>
 
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
