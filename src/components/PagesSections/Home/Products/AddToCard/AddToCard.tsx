@@ -142,6 +142,9 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
         ) : (
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-4 w-4 " />
+            <span className="hidden lg:block">
+              {locale === "en" ? "Add" : "العربه"}
+            </span>
             {getButtonText()}
           </div>
         )}

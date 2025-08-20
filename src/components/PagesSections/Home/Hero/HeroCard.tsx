@@ -28,7 +28,7 @@ const HeroCard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="order-2 lg:order-1"
+            className="order-2 lg:order-1 text-center lg:text-start"
           >
             <motion.h1
               initial={{ opacity: 0 }}
@@ -37,8 +37,8 @@ const HeroCard = () => {
               className="text-4xl  font-bold text-gray-900 dark:text-white mb-4"
             >
               {locale === "en"
-                ? "Delicious Food Delivered To Your Door"
-                : "وصول طعام لذيذ إلى باب منزلك"}
+                ? "Qasr Al Sultan – Royal Grills Experience"
+                : "قصر السلطان – تجربة مشويات ملكية"}
             </motion.h1>
 
             <motion.p
@@ -48,8 +48,8 @@ const HeroCard = () => {
               className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-lg mx-auto lg:mx-0"
             >
               {locale === "en"
-                ? "Order from your favorite restaurants with just a few clicks"
-                : "اطلب من مطاعمك المفضلة ببضع نقرات فقط"}
+                ? "Qasr Al Sultan – Royal Grills Experience"
+                : "قصر السلطان – تجربة مشويات ملكية"}
             </motion.p>
 
             <div className="flex flex-wrap gap-3 md:gap-4 justify-center lg:justify-start mb-8">

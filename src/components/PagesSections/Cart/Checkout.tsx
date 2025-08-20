@@ -24,6 +24,7 @@ import {
   Loader2,
   MessageSquareText,
   Truck,
+  Home,
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
@@ -33,6 +34,13 @@ import { Locale, useRouter } from "@/i18n/routing";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import axiosErrorHandler from "@/lib/axiosErrorHandler";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const translations = {
   en: {
@@ -63,6 +71,11 @@ const translations = {
     orderError: "Failed to create order",
     paymentUrlError: "Payment URL not received",
     checkoutFailed: "Checkout failed",
+    receiveFromBranch: "Receive from branch",
+    selectBranch: "Select branch",
+    branch: "Branch",
+    delivery: "Delivery",
+    branchError: "Please select a branch",
   },
   ar: {
     checkout: "الدفع",
@@ -92,6 +105,11 @@ const translations = {
     orderError: "فشل إنشاء الطلب",
     paymentUrlError: "لم يتم استلام رابط الدفع",
     checkoutFailed: "فشل عملية الدفع",
+    receiveFromBranch: "استلام من الفرع",
+    selectBranch: "اختر الفرع",
+    branch: "الفرع",
+    delivery: "توصيل",
+    branchError: "الرجاء اختيار فرع",
   },
 };
 
@@ -101,17 +119,22 @@ const paymentMethods = [
 ] as const;
 type PaymentMethod = (typeof paymentMethods)[number];
 
+const branches = [
+  { id: "main", name: { en: "Main Branch", ar: "الفرع الرئيسي" } },
+  { id: "north", name: { en: "North Branch", ar: "فرع الشمال" } },
+  { id: "south", name: { en: "South Branch", ar: "فرع الجنوب" } },
+];
+
 export default function CheckoutForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchParamsStr = searchParams.toString();
   const { cartItems, cartTotal, clearCartItems: removeAll } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(
-    null
-  );
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [receiveOption, setReceiveOption] = useState<"delivery" | "branch">("delivery");
 
   const locale = useLocale() as Locale;
   const t = translations[locale];
@@ -123,10 +146,27 @@ export default function CheckoutForm() {
       .string()
       .min(6, t.phoneError)
       .regex(/^[0-9+\-() ]+$/, t.phoneError),
-    address: z.string().min(5, t.addressError),
+    address: z.string().min(5, t.addressError).optional(),
     paymentMethod: z.enum(paymentMethods, {
       required_error: t.paymentError,
     }),
+    receiveOption: z.enum(["delivery", "branch"]),
+    branchId: z.string().optional(),
+  }).superRefine((data, ctx) => {
+    if (data.receiveOption === "delivery" && !data.address) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t.addressError,
+        path: ["address"],
+      });
+    }
+    if (data.receiveOption === "branch" && !data.branchId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t.branchError,
+        path: ["branchId"],
+      });
+    }
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -135,6 +175,7 @@ export default function CheckoutForm() {
       name: "",
       phone: "",
       address: "",
+      receiveOption: "delivery",
     },
   });
 
@@ -175,17 +216,28 @@ export default function CheckoutForm() {
   ) => {
     try {
       setIsSubmitting(true);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      
+      const orderData = {
+        items: cartItems,
+        customer: {
+          name: formData.name,
+          phone: formData.phone,
+          ...(formData.receiveOption === "delivery" 
+            ? { address: formData.address }
+            : { branchId: formData.branchId }
+          ),
+        },
+        paymentMethod,
+        totalPrice,
+        receiveOption: formData.receiveOption,
+      };
+
       const response = await axios.post(
         `${STORE}/api/orders`,
-        {
-          items: cartItems,
-          customer: formData,
-          paymentMethod,
-          totalPrice,
-        },
+        orderData,
         { headers: { "Content-Type": "application/json" } }
       );
+
       switch (paymentMethod) {
         case "WHATSAPP":
           window.open("https://wa.me/+201204999930", "_blank");
@@ -288,24 +340,84 @@ export default function CheckoutForm() {
 
             {/* Shipping Address */}
             <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t.address}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t.address}
-                        {...field}
+              <h3 className="font-medium">{t.shippingAddress}</h3>
+              
+              <div className="flex gap-4 mb-4">
+                <Button
+                  type="button"
+                  variant={receiveOption === "delivery" ? "default" : "outline"}
+                  className="flex-1"
+                  onClick={() => {
+                    setReceiveOption("delivery");
+                    form.setValue("receiveOption", "delivery");
+                  }}
+                >
+                  <Truck className="mr-2 h-4 w-4" />
+                  {t.delivery}
+                </Button>
+                <Button
+                  type="button"
+                  variant={receiveOption === "branch" ? "default" : "outline"}
+                  className="flex-1"
+                  onClick={() => {
+                    setReceiveOption("branch");
+                    form.setValue("receiveOption", "branch");
+                  }}
+                >
+                  <Home className="mr-2 h-4 w-4" />
+                  {t.receiveFromBranch}
+                </Button>
+              </div>
+
+              {receiveOption === "delivery" ? (
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.address}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t.address}
+                          {...field}
+                          disabled={isSubmitting}
+                          className={isRTL ? "text-right" : "text-left"}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <FormField
+                  control={form.control}
+                  name="branchId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.branch}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                         disabled={isSubmitting}
-                        className={isRTL ? "text-right" : "text-left"}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t.selectBranch} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {branches.map((branch) => (
+                            <SelectItem key={branch.id} value={branch.id}>
+                              {branch.name[locale]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             {/* Payment Method Section */}
