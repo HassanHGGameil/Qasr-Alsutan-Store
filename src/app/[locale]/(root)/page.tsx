@@ -1,5 +1,6 @@
 import CategoryClinet from "@/components/PagesSections/Home/Categories/CategoryClient";
 import HeroCard from "@/components/PagesSections/Home/Hero/HeroCard";
+import NewSection from "@/components/PagesSections/Home/NewSection/NewSection";
 import ProductClient from "@/components/PagesSections/Home/Products/Product/ProductClient";
 import getCategories from "@/lib/actions/getCategories";
 
@@ -23,6 +24,7 @@ export default async function Home({ params }: PageProps) {
       <HeroCard />
       <CategoryClinet categories={categories} />
       <ProductClient />
+      <NewSection />
     </main>
   );
 }

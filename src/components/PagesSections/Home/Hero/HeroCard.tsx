@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import DialogPopUp from "@/components/common/Dialog-PopUp/PopUp";
 
-import heroImage from "../../../../../public/products/one/05.png";
+import heroImage from "../../../../../public/images/open2.png";
 import heroImage1 from "../../../../../public/products/one/02.png";
 
 const HeroCard = () => {
@@ -30,6 +30,16 @@ const HeroCard = () => {
             transition={{ duration: 0.8 }}
             className="order-2 lg:order-1 text-center lg:text-start"
           >
+            <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4 }}
+                          className="text-lg text-red-600 dark:text-gray-300 mb-8 max-w-lg mx-auto lg:mx-0"
+                        >
+                          {locale === "en"
+                            ? "Qasr Al Sultan – Royal Grills Experience"
+                            : "قصر السلطان – تجربة مشويات ملكية"}
+                        </motion.p>
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -104,7 +114,7 @@ const HeroCard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative order-1 lg:order-2 w-full h-80 md:h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-xl"
+            className="relative order-1 lg:order-2 w-full h-80 md:h-96 lg:h-[500px] rounded-3xl overflow-hidden "
           >
             <Image
               src={heroImage}

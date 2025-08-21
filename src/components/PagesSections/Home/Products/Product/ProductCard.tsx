@@ -25,7 +25,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
 
   return (
     <Card
-      className="w-full max-w-sm overflow-hidden rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+      className="w-full max-w-sm overflow-hidden dark:bg-slate-900 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 dark:border-gray-800 hover:-translate-y-1 border border-gray-100"
       aria-labelledby={`food-title-${id}`}
     >
       <Link href={`/products/${id}`}>
@@ -46,11 +46,11 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex flex-col justify-between items-start">
             <h3
               id={`food-title-${id}`}
-              className="text-md lg:text-xl font-bold text-gray-900 line-clamp-1"
+              className="text-md lg:text-xl font-bold  line-clamp-1"
             >
               {title}
             </h3>
-            <p className="text-gray-600 line-clamp-1 text-[10px]">{subtitle}</p>
+            <p className="text-gray-600 dark:text-gray-300 line-clamp-1 text-[10px]">{subtitle}</p>
           </div>
         </CardHeader>
       </Link>
@@ -61,7 +61,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex justify-between items-center">
             <div className="">
               <div className="flex items-center gap-2">
-                <span className="text-sm md:text-md lg:text-xl font-bold text-gray-900">
+                <span className="text-sm md:text-md lg:text-xl font-bold ">
                   ${price.toFixed(2)}
                 </span>
               </div>

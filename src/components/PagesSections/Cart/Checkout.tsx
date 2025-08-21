@@ -20,12 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useCart } from "./useCart";
-import {
-  Loader2,
-  MessageSquareText,
-  Truck,
-  Home,
-} from "lucide-react";
+import { Loader2, Truck, Building } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { STORE } from "@/lib/constains/constains";
@@ -41,6 +36,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import getBranches from "@/lib/actions/getBranches";
+import { BranchesDto } from "@/types/branches";
 
 const translations = {
   en: {
@@ -59,8 +56,10 @@ const translations = {
     placeOrder: "Place Order",
     clearCart: "Clear Cart",
     processing: "Processing...",
-    whatsapp: "WhatsApp",
-    cash_on_delivery: "CashOnDelivery",
+    payment_at_branch: "Payment at Branch",
+    branchPaymentDescription:
+      "You'll pay at the branch when you pick up your order",
+    cash_on_delivery: "Cash on Delivery",
     codDescription: "You'll pay in cash when your order is delivered",
     free: "Free",
     nameError: "Name must be at least 2 characters",
@@ -71,7 +70,6 @@ const translations = {
     orderError: "Failed to create order",
     paymentUrlError: "Payment URL not received",
     checkoutFailed: "Checkout failed",
-    receiveFromBranch: "Receive from branch",
     selectBranch: "Select branch",
     branch: "Branch",
     delivery: "Delivery",
@@ -93,7 +91,8 @@ const translations = {
     placeOrder: "تأكيد الطلب",
     clearCart: "تفريغ السلة",
     processing: "جاري المعالجة...",
-    whatsapp: "واتساب",
+    payment_at_branch: "الدفع في الفرع",
+    branchPaymentDescription: "سوف تدفع في الفرع عند استلام طلبك",
     cash_on_delivery: "الدفع عند الاستلام",
     codDescription: "سوف تدفع نقداً عند استلام طلبك",
     free: "مجاني",
@@ -105,7 +104,6 @@ const translations = {
     orderError: "فشل إنشاء الطلب",
     paymentUrlError: "لم يتم استلام رابط الدفع",
     checkoutFailed: "فشل عملية الدفع",
-    receiveFromBranch: "استلام من الفرع",
     selectBranch: "اختر الفرع",
     branch: "الفرع",
     delivery: "توصيل",
@@ -113,61 +111,66 @@ const translations = {
   },
 };
 
-const paymentMethods = [
-  "CASH_ON_DELIVERY",
-  "WHATSAPP",
-] as const;
+const paymentMethods = ["CASH_ON_DELIVERY", "PAYMENT_AT_BRANCH"] as const;
 type PaymentMethod = (typeof paymentMethods)[number];
-
-const branches = [
-  { id: "main", name: { en: "Main Branch", ar: "الفرع الرئيسي" } },
-  { id: "north", name: { en: "North Branch", ar: "فرع الشمال" } },
-  { id: "south", name: { en: "South Branch", ar: "فرع الجنوب" } },
-];
 
 export default function CheckoutForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchParamsStr = searchParams.toString();
-  const { cartItems, cartTotal, clearCartItems: removeAll } = useCart();
+  const { cartItems, clearCartItems: removeAll } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [receiveOption, setReceiveOption] = useState<"delivery" | "branch">("delivery");
+  const [branches, setBranches] = useState<BranchesDto[]>([]);
 
   const locale = useLocale() as Locale;
   const t = translations[locale];
   const isRTL = locale === "ar";
 
-  const formSchema = z.object({
-    name: z.string().min(2, t.nameError),
-    phone: z
-      .string()
-      .min(6, t.phoneError)
-      .regex(/^[0-9+\-() ]+$/, t.phoneError),
-    address: z.string().min(5, t.addressError).optional(),
-    paymentMethod: z.enum(paymentMethods, {
-      required_error: t.paymentError,
-    }),
-    receiveOption: z.enum(["delivery", "branch"]),
-    branchId: z.string().optional(),
-  }).superRefine((data, ctx) => {
-    if (data.receiveOption === "delivery" && !data.address) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: t.addressError,
-        path: ["address"],
-      });
-    }
-    if (data.receiveOption === "branch" && !data.branchId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: t.branchError,
-        path: ["branchId"],
-      });
-    }
-  });
+  // Fetch branches on component mount
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const branchesData = await getBranches();
+        setBranches(branchesData);
+      } catch (error) {
+        console.error("Failed to fetch branches:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  const formSchema = z
+    .object({
+      name: z.string().min(2, t.nameError),
+      phone: z
+        .string()
+        .min(6, t.phoneError)
+        .regex(/^[0-9+\-() ]+$/, t.phoneError),
+      address: z.string().min(5, t.addressError).optional().or(z.literal("")),
+      paymentMethod: z.enum(paymentMethods, {
+        required_error: t.paymentError,
+      }),
+      branchId: z.string().min(1, t.branchError).optional().or(z.literal("")),
+    })
+    .superRefine((data, ctx) => {
+      if (data.paymentMethod === "CASH_ON_DELIVERY" && !data.address) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t.addressError,
+          path: ["address"],
+        });
+      }
+      if (data.paymentMethod === "PAYMENT_AT_BRANCH" && !data.branchId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t.branchError,
+          path: ["branchId"],
+        });
+      }
+    });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -175,9 +178,13 @@ export default function CheckoutForm() {
       name: "",
       phone: "",
       address: "",
-      receiveOption: "delivery",
+      paymentMethod: undefined,
+      branchId: "",
     },
   });
+
+  // Get the selected payment method from form
+  const selectedPayment = form.watch("paymentMethod");
 
   useEffect(() => {
     if (showSuccess) return;
@@ -197,7 +204,8 @@ export default function CheckoutForm() {
     return cartItems.reduce((total, item) => {
       try {
         const itemPrice = parseFloat(String(item.price)) || 0;
-        return total + itemPrice;
+        const quantity = item.quantity || 1;
+        return total + itemPrice * quantity;
       } catch (error) {
         console.error("Error calculating price for item:", item.id, error);
         return total;
@@ -206,8 +214,16 @@ export default function CheckoutForm() {
   }, [cartItems]);
 
   const handlePaymentSelect = (method: PaymentMethod) => {
-    setSelectedPayment(method);
     form.setValue("paymentMethod", method);
+
+    // Clear the other field when switching payment methods
+    if (method === "CASH_ON_DELIVERY") {
+      form.setValue("branchId", "");
+      form.clearErrors("branchId");
+    } else {
+      form.setValue("address", "");
+      form.clearErrors("address");
+    }
   };
 
   const handleCheckout = async (
@@ -216,36 +232,45 @@ export default function CheckoutForm() {
   ) => {
     try {
       setIsSubmitting(true);
-      
+      setErrorMessage(null);
+
+      // Find the selected branch
+      const selectedBranch = formData.branchId
+        ? branches.find((branch) => branch.id === formData.branchId)
+        : null;
+
       const orderData = {
         items: cartItems,
         customer: {
           name: formData.name,
           phone: formData.phone,
-          ...(formData.receiveOption === "delivery" 
+          ...(formData.paymentMethod === "CASH_ON_DELIVERY"
             ? { address: formData.address }
-            : { branchId: formData.branchId }
-          ),
+            : {
+                branchId: formData.branchId,
+                branch: selectedBranch
+                  ? locale === "ar"
+                    ? selectedBranch.nameAr
+                    : selectedBranch.nameEn
+                  : "",
+              }),
         },
         paymentMethod,
         totalPrice,
-        receiveOption: formData.receiveOption,
       };
 
-      const response = await axios.post(
-        `${STORE}/api/orders`,
-        orderData,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await axios.post(`${STORE}/api/orders`, orderData, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       switch (paymentMethod) {
-        case "WHATSAPP":
-          window.open("https://wa.me/+201204999930", "_blank");
+        case "CASH_ON_DELIVERY":
           toast.success(t.orderSubmitted);
           removeAll();
           router.push("/order/orderSuccess");
           break;
-        case "CASH_ON_DELIVERY":
+        case "PAYMENT_AT_BRANCH":
           toast.success(t.orderSubmitted);
           removeAll();
           router.push("/order/orderSuccess");
@@ -264,13 +289,13 @@ export default function CheckoutForm() {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!selectedPayment) {
+    if (!values.paymentMethod) {
       form.setError("paymentMethod", { message: t.paymentError });
       return;
     }
 
     try {
-      await handleCheckout(selectedPayment, values);
+      await handleCheckout(values.paymentMethod, values);
     } catch (error) {
       axiosErrorHandler(error);
     }
@@ -281,7 +306,7 @@ export default function CheckoutForm() {
   }
 
   return (
-    <Card className="w-full max-w-2xl" dir={isRTL ? "rtl" : "ltr"}>
+    <Card className="w-full max-w-2xl dark:bg-slate-900" dir={isRTL ? "rtl" : "ltr"}>
       <CardHeader>
         <CardTitle>{t.checkout}</CardTitle>
       </CardHeader>
@@ -338,44 +363,74 @@ export default function CheckoutForm() {
               </div>
             </div>
 
-            {/* Shipping Address */}
+            {/* Payment Method Section */}
             <div className="space-y-4">
-              <h3 className="font-medium">{t.shippingAddress}</h3>
-              
-              <div className="flex gap-4 mb-4">
+              <h3 className="font-medium">{t.paymentMethod}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Button
                   type="button"
-                  variant={receiveOption === "delivery" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => {
-                    setReceiveOption("delivery");
-                    form.setValue("receiveOption", "delivery");
-                  }}
+                  variant={
+                    selectedPayment === "CASH_ON_DELIVERY"
+                      ? "default"
+                      : "outline"
+                  }
+                  className="flex flex-col items-center justify-center h-24 gap-2"
+                  onClick={() => handlePaymentSelect("CASH_ON_DELIVERY")}
+                  disabled={isSubmitting}
+                  aria-pressed={selectedPayment === "CASH_ON_DELIVERY"}
+                  aria-label={t.cash_on_delivery}
                 >
-                  <Truck className="mr-2 h-4 w-4" />
-                  {t.delivery}
+                  <Truck className="h-6 w-6" />
+                  <span>{t.cash_on_delivery}</span>
                 </Button>
+
                 <Button
                   type="button"
-                  variant={receiveOption === "branch" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => {
-                    setReceiveOption("branch");
-                    form.setValue("receiveOption", "branch");
-                  }}
+                  variant={
+                    selectedPayment === "PAYMENT_AT_BRANCH"
+                      ? "default"
+                      : "outline"
+                  }
+                  className="flex flex-col items-center justify-center h-24 gap-2"
+                  onClick={() => handlePaymentSelect("PAYMENT_AT_BRANCH")}
+                  disabled={isSubmitting}
+                  aria-pressed={selectedPayment === "PAYMENT_AT_BRANCH"}
+                  aria-label={t.payment_at_branch}
                 >
-                  <Home className="mr-2 h-4 w-4" />
-                  {t.receiveFromBranch}
+                  <Building className="h-6 w-6" />
+                  <span>{t.payment_at_branch}</span>
                 </Button>
               </div>
 
-              {receiveOption === "delivery" ? (
+              {selectedPayment === "CASH_ON_DELIVERY" && (
+                <div className="mt-2  text-sm p-2 bg-slate-50 rounded-md text-blue-700 ">
+                  {t.codDescription}
+                </div>
+              )}
+
+              {selectedPayment === "PAYMENT_AT_BRANCH" && (
+                <div className="mt-2 bg-slate-50 rounded-lg p-2 text-blue-700 text-sm ">
+                  {t.branchPaymentDescription}
+                </div>
+              )}
+
+              {form.formState.errors.paymentMethod && (
+                <p className="text-sm font-medium text-destructive">
+                  {form.formState.errors.paymentMethod.message}
+                </p>
+              )}
+            </div>
+
+            {/* Conditional Fields Based on Payment Method */}
+            {selectedPayment === "CASH_ON_DELIVERY" && (
+              <div className="space-y-4">
+                <h3 className="font-medium text-green-600">{t.shippingAddress}</h3>
                 <FormField
                   control={form.control}
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t.address}</FormLabel>
+                      {/* <FormLabel>{t.address}</FormLabel> */}
                       <FormControl>
                         <Input
                           placeholder={t.address}
@@ -388,13 +443,18 @@ export default function CheckoutForm() {
                     </FormItem>
                   )}
                 />
-              ) : (
+              </div>
+            )}
+
+            {selectedPayment === "PAYMENT_AT_BRANCH" && (
+              <div className="space-y-4">
+                <h3 className="font-medium">{t.branch}</h3>
                 <FormField
                   control={form.control}
                   name="branchId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t.branch}</FormLabel>
+                      <FormLabel className="text-green-600">{t.selectBranch}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -407,8 +467,10 @@ export default function CheckoutForm() {
                         </FormControl>
                         <SelectContent>
                           {branches.map((branch) => (
-                            <SelectItem key={branch.id} value={branch.id}>
-                              {branch.name[locale]}
+                            <SelectItem className="focus:bg-green-500 focus:text-white" key={branch.id} value={branch.id}>
+                              {locale === "ar" && branch.nameAr
+                                ? branch.nameAr
+                                : branch.nameEn}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -417,56 +479,8 @@ export default function CheckoutForm() {
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
-
-            {/* Payment Method Section */}
-            <div className="space-y-4">
-              <h3 className="font-medium">{t.paymentMethod}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {paymentMethods.map((method) => (
-                  <Button
-                    key={method}
-                    type="button"
-                    variant={selectedPayment === method ? "default" : "outline"}
-                    className="flex flex-col items-center justify-center h-24 gap-2"
-                    onClick={() => handlePaymentSelect(method)}
-                    disabled={isSubmitting}
-                    aria-pressed={selectedPayment === method}
-                    aria-label={
-                      t[method.toLowerCase() as keyof typeof translations.en]
-                    }
-                  >
-                    {method === "WHATSAPP" && (
-                      <MessageSquareText className="h-6 w-6" />
-                    )}
-                    {method === "CASH_ON_DELIVERY" && (
-                      <Truck className="h-6 w-6" />
-                    )}
-
-                    <span>
-                      {method === "CASH_ON_DELIVERY"
-                        ? t.cash_on_delivery
-                        : t[
-                            method.toLowerCase() as keyof typeof translations.en
-                          ]}
-                    </span>
-                  </Button>
-                ))}
               </div>
-
-              {selectedPayment === "CASH_ON_DELIVERY" && (
-                <div className="mt-2 text-sm text-muted-foreground">
-                  {t.codDescription}
-                </div>
-              )}
-
-              {form.formState.errors.paymentMethod && (
-                <p className="text-sm font-medium text-destructive">
-                  {form.formState.errors.paymentMethod.message}
-                </p>
-              )}
-            </div>
+            )}
 
             {/* Order Summary */}
             <div className="border-t pt-4 mt-4">
@@ -474,13 +488,15 @@ export default function CheckoutForm() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>{t.subtotal}</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>${totalPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>{t.shipping}</span>
+                  <span>{t.free}</span>
                 </div>
                 <div className="flex justify-between font-bold pt-2 border-t">
                   <span>{t.total}</span>
-                  <span className="text-lg">
-                    ${cartTotal.toFixed(2)}
-                  </span>
+                  <span className="text-lg">${totalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>

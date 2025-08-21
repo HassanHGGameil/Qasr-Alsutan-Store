@@ -1,4 +1,4 @@
-import { Package, ShoppingCart } from "lucide-react";
+import { ChefHat, ShoppingCart } from "lucide-react";
 import { useLocale } from "next-intl";
 import { ReactNode } from "react";
 
@@ -72,7 +72,7 @@ const SectionTitle = ({
       >
         <div className={``}>
           <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-slate-700 to-slate-700 dark:from-blue-900/30 dark:to-indigo-900/30 px-4 py-2 rounded-full mb-4">
-            <Package className="h-5 w-5 mx-2 text-white dark:text-green-400" />
+            <ChefHat className="h-5 w-5 mx-2 text-white dark:text-green-400" />
             <span className="text-sm font-medium text-white dark:text-green-400">
               {subtitle}
             </span>
