@@ -74,7 +74,7 @@ const ProductSlidesCard = ({ productItem }: ProductCardProps) => {
             absolute top-3 right-3 sm:top-4 sm:right-4
             w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-dark 
             shadow-sm sm:shadow-lg flex items-center justify-center
-            bg-slate-700 dark:bg-blue-900/20 p-1 shadow-blue-900/30 dark:shadow-blue-900/30 border border-gray-200 dark:border-green-400/50
+            bg-slate-800 dark:bg-blue-900/20 p-1 shadow-blue-900/30 dark:shadow-blue-900/30 border border-gray-200 dark:border-green-400/50
             text-green-500 transition-all duration-300 ease-out
             
             hover:text-green-600

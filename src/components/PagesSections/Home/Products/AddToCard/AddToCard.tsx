@@ -120,7 +120,7 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
     " transition-all duration-300",
     quantityReachedMax
       ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-      : "bg-red-700 hover:bg-primary-dark",
+      : "bg-red-700 dark:bg-yellow-500 text-white hover:bg-primary-dark",
     isLoading && "opacity-90"
   );
 

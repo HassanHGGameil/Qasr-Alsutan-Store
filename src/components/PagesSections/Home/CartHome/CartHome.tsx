@@ -1,5 +1,5 @@
 "use client";
-import {Minus, Plus, Loader2 } from "lucide-react";
+import { Minus, Plus, Loader2, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +21,14 @@ import { useRouter } from "@/i18n/routing";
 
 export default function CartHome() {
   const { cartItems, removeFromCart, updateCartQuantity } = useCart();
+
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const locale = useLocale()
+  const locale = useLocale();
 
   const handleRemove = async (id: string) => {
     setIsRemoving(id);
@@ -55,14 +57,21 @@ export default function CartHome() {
           {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
         </Badge> */}
         <div className="text-white font-semibold">
-            <h2 className="">{locale === "en" ? "Your Cart" : "السلة الخاصة بك"}</h2>
+          <h2 className="">
+            {locale === "en" ? "Your Cart" : "السلة الخاصة بك"}
+          </h2>
         </div>
       </CardHeader>
 
       <CardContent className="hidden lg:block p-0 ">
         {cartItems.length === 0 ? (
-          <div className="p-6 text-center text-muted-foreground">
-            🛒 Your cart is empty
+          <div className="flex flex-col justify-center items-center gap-4 p-6 text-center text-muted-foreground">
+            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center">
+              <ShoppingCart className="w-12 h-12 text-muted-foreground" />
+            </div>
+            <span className="">
+              {locale === "en" ? "Your cart is empty" : "العربه فارغه"}
+            </span>
           </div>
         ) : (
           <AnimatePresence>
@@ -94,8 +103,9 @@ export default function CartHome() {
                 {/* Product Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between gap-2">
-
-                    <h3 className="font-medium line-clamp-2">{locale === "en" ? item.titleEn : item.titleAr}</h3>
+                    <h3 className="font-medium line-clamp-2 dark:text-slate-800">
+                      {locale === "en" ? item.titleEn : item.titleAr}
+                    </h3>
 
                     <Button
                       aria-label="Remove item"
@@ -103,7 +113,7 @@ export default function CartHome() {
                       size="icon"
                       onClick={() => handleRemove(item.id)}
                       disabled={isRemoving === item.id}
-                      className="h-8 w-8 bg-white hover:bg-red-600 shadow-sm"
+                      className="h-8 w-8 bg-white hover:bg-red-800 shadow-sm "
                     >
                       {isRemoving === item.id ? (
                         <Loader2 className="h-3 w-3 animate-spin" />
@@ -127,7 +137,7 @@ export default function CartHome() {
                         handleUpdateQuantity(item.id, item.quantity - 1)
                       }
                       disabled={item.quantity <= 1 || isUpdating === item.id}
-                      className="h-7 w-7 p-0"
+                      className="h-7 w-7 p-0 "
                     >
                       <Minus className="h-3 w-3" />
                     </Button>
@@ -144,7 +154,7 @@ export default function CartHome() {
                             parseInt(e.target.value) || 1
                           )
                         }
-                        className="w-12 h-7 text-center text-sm"
+                        className="w-12 h-7 text-center text-sm dark:text-slate-800"
                         disabled={isUpdating === item.id}
                       />
                       {isUpdating === item.id && (
@@ -180,10 +190,12 @@ export default function CartHome() {
             <span>Subtotal:</span>
             <span>${formater.format(subtotal)}</span>
           </div>
-          <Button className="w-full bg-red-800 hover:bg-red-900"
-                    onClick={() => router.push(`/cart `)}
-
-          >{locale === "en" ? "Place Order" : "فعل الطلب"}</Button>
+          <Button
+            className="w-full bg-red-800 hover:bg-red-900 dark:text-white"
+            onClick={() => router.push(`/cart`)}
+          >
+            {locale === "en" ? "Place Order" : "فعل الطلب الان"}
+          </Button>
         </CardFooter>
       )}
     </Card>

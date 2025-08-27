@@ -502,19 +502,12 @@ export default function CheckoutForm() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => removeAll()}
-              disabled={isSubmitting}
-            >
-              {t.clearCart}
-            </Button>
+          <CardFooter className="flex justify-center">
+            
             <Button
               type="submit"
               disabled={isSubmitting || !selectedPayment}
-              className="gap-2"
+              className="gap-2 w-full"
             >
               {isSubmitting ? (
                 <>
