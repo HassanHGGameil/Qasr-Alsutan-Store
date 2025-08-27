@@ -119,8 +119,8 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
   const buttonClasses = cn(
     " transition-all duration-300",
     quantityReachedMax
-      ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-      : "bg-red-700 dark:bg-yellow-500 text-white hover:bg-primary-dark",
+      ? "bg-gray-400 hover:bg-gray-400 text-sm cursor-not-allowed"
+      : "bg-red-700 dark:bg-yellow-500 text-sm text-white hover:bg-primary-dark",
     isLoading && "opacity-90"
   );
 
@@ -141,11 +141,13 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4 " />
+            <ShoppingCart className="h-2 w-2 lg:h-4 lg:w-4 " />
             <span className="hidden lg:block">
               {locale === "en" ? "Add" : "العربه"}
             </span>
+            <span className="hidden lg:block">
             {getButtonText()}
+            </span>
           </div>
         )}
       </Button>
