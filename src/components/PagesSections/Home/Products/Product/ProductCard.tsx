@@ -47,7 +47,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex flex-col justify-between items-start">
             <h3
               id={`food-title-${id}`}
-              className="text-md lg:text-xl font-bold  line-clamp-1"
+              className="text-sm md:text-md lg:text-xl font-bold  line-clamp-1"
             >
               {title}
             </h3>
@@ -57,7 +57,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           </div>
         </CardHeader>
       </Link>
-      
+
       <CardFooter className="px-5">
         <div className="w-full flex items-center gap-3">
           <AddToCart product={productItem} />
@@ -65,7 +65,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
           <div className="flex justify-between items-center">
             <div className="">
               <div className="flex items-center gap-2">
-                <span className="text-sm md:text-md lg:text-xl font-bold ">
+                <span className="text-xs md:text-md lg:text-xl font-bold ">
                   {formater.format(price)}{" "}
                 </span>
               </div>
