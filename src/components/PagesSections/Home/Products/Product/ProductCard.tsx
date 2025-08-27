@@ -7,6 +7,7 @@ import AddToCart from "../AddToCard/AddToCard";
 import type TProduct from "@/types/product";
 import DialogPopUp from "@/components/common/Dialog-PopUp/PopUp";
 import { Link } from "@/i18n/routing";
+import { formater } from "@/lib/utils";
 
 interface ProductCardProps {
   productItem: TProduct;
@@ -50,10 +51,13 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
             >
               {title}
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 line-clamp-1 text-[10px]">{subtitle}</p>
+            <p className="text-gray-600 dark:text-gray-300 line-clamp-1 text-[10px]">
+              {subtitle}
+            </p>
           </div>
         </CardHeader>
       </Link>
+      
       <CardFooter className="px-5">
         <div className="w-full flex items-center gap-3">
           <AddToCart product={productItem} />
@@ -62,7 +66,7 @@ const ProductCard = ({ productItem }: ProductCardProps) => {
             <div className="">
               <div className="flex items-center gap-2">
                 <span className="text-sm md:text-md lg:text-xl font-bold ">
-                  ${price.toFixed(2)}
+                  {formater.format(price)}{" "}
                 </span>
               </div>
             </div>

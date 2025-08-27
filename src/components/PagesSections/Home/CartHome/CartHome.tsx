@@ -1,24 +1,32 @@
 "use client";
-import { X, Minus, Plus, Loader2 } from "lucide-react";
+import {Minus, Plus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useCart } from "./useCart";
+import { useCart } from "../../Cart/useCart";
 import { CartItem } from "@/redux/features/cart/cartSlice";
+import { formater } from "@/lib/utils";
+import { MdDelete } from "react-icons/md";
+import { useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 
-export default function CartItems() {
+export default function CartHome() {
   const { cartItems, removeFromCart, updateCartQuantity } = useCart();
-
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
-    const router = useRouter();
+  const router = useRouter()
 
+  const locale = useLocale()
 
   const handleRemove = async (id: string) => {
     setIsRemoving(id);
@@ -30,7 +38,6 @@ export default function CartItems() {
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     setIsUpdating(id);
     await new Promise((resolve) => setTimeout(resolve, 200));
-    // ✅ enforce 1–10 range
     updateCartQuantity(id, Math.max(1, Math.min(9, quantity)));
     setIsUpdating(null);
   };
@@ -41,15 +48,18 @@ export default function CartItems() {
   );
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row justify-between items-center pb-2">
-        <h2 className="text-xl font-semibold">Your Items</h2>
-        <Badge variant="outline">
+    <Card className="bg-slate-100">
+      <CardHeader className="flex flex-row justify-center gap-5 items-center bg-red-900">
+        {/* <h2 className="text-xl font-semibold">Your Items</h2> */}
+        {/* <Badge variant="outline">
           {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
-        </Badge>
+        </Badge> */}
+        <div className="text-white font-semibold">
+            <h2 className="">{locale === "en" ? "Your Cart" : "السلة الخاصة بك"}</h2>
+        </div>
       </CardHeader>
 
-      <CardContent className="p-0">
+      <CardContent className="hidden lg:block p-0 ">
         {cartItems.length === 0 ? (
           <div className="p-6 text-center text-muted-foreground">
             🛒 Your cart is empty
@@ -84,25 +94,27 @@ export default function CartItems() {
                 {/* Product Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between gap-2">
-                    <h3 className="font-medium line-clamp-2">{item.titleEn}</h3>
+
+                    <h3 className="font-medium line-clamp-2">{locale === "en" ? item.titleEn : item.titleAr}</h3>
+
                     <Button
                       aria-label="Remove item"
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemove(item.id)}
                       disabled={isRemoving === item.id}
-                      className="h-8 w-8"
+                      className="h-8 w-8 bg-white hover:bg-red-600 shadow-sm"
                     >
                       {isRemoving === item.id ? (
                         <Loader2 className="h-3 w-3 animate-spin" />
                       ) : (
-                        <X className="h-3 w-3" />
+                        <MdDelete className="h-3 w-3 text-slate-900" />
                       )}
                     </Button>
                   </div>
 
-                  <p className="text-sm font-semibold text-red-800 mt-1">
-                    ${item.price.toFixed(2)}
+                  <p className="text-sm font-semibold text-red-800 ">
+                    {formater.format(item.price * item.quantity)}
                   </p>
 
                   {/* Quantity Controls */}
@@ -156,11 +168,6 @@ export default function CartItems() {
                     </Button>
                   </div>
                 </div>
-
-                {/* Line Total */}
-                <div className="font-medium text-red-800 text-sm">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </div>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -171,8 +178,12 @@ export default function CartItems() {
         <CardFooter className="flex flex-col gap-3 pt-4">
           <div className="flex justify-between w-full font-semibold">
             <span>Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>${formater.format(subtotal)}</span>
           </div>
+          <Button className="w-full bg-red-800 hover:bg-red-900"
+                    onClick={() => router.push(`/cart `)}
+
+          >{locale === "en" ? "Place Order" : "فعل الطلب"}</Button>
         </CardFooter>
       )}
     </Card>

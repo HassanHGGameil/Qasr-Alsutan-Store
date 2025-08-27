@@ -374,7 +374,7 @@ export default function CheckoutForm() {
                       ? "default"
                       : "outline"
                   }
-                  className="flex flex-col items-center justify-center h-24 gap-2"
+                  className="flex flex-col items-center justify-center h-24 gap-2 hover:bg-green-500  hover:text-white"
                   onClick={() => handlePaymentSelect("CASH_ON_DELIVERY")}
                   disabled={isSubmitting}
                   aria-pressed={selectedPayment === "CASH_ON_DELIVERY"}
@@ -391,7 +391,7 @@ export default function CheckoutForm() {
                       ? "default"
                       : "outline"
                   }
-                  className="flex flex-col items-center justify-center h-24 gap-2"
+                  className="flex flex-col items-center justify-center h-24 gap-2 hover:bg-green-500 hover:text-white"
                   onClick={() => handlePaymentSelect("PAYMENT_AT_BRANCH")}
                   disabled={isSubmitting}
                   aria-pressed={selectedPayment === "PAYMENT_AT_BRANCH"}

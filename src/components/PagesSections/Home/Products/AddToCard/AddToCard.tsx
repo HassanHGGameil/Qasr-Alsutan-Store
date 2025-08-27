@@ -151,7 +151,7 @@ const AddToCart = ({ product, maxQuantity = 10 }: AddToCartProps) => {
       </Button>
 
       {quantityReachedMax && (
-        <p className="text-xs text-destructive mt-1 animate-pulse">
+        <p className="text-[10px] text-destructive mt-1 animate-pulse">
           {TOAST_MESSAGES.maxReached[locale as "en" | "ar"](maxQuantity)}
         </p>
       )}

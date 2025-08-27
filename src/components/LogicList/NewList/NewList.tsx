@@ -7,15 +7,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
-type SliderListProps<T> = {
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SliderListProps<T extends Record<string, any>> = {
   records?: T[];
   renderItem: (itemData: T) => React.ReactNode;
   emptyMessage: string;
 };
 
-type HasId = { id: string };
-
-const NewList = <T extends HasId>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const NewList = <T extends Record<string, any>>({
   records = [],
   renderItem,
 }: SliderListProps<T>): JSX.Element => {
@@ -41,45 +42,53 @@ const NewList = <T extends HasId>({
 
   return (
     <div
-    dir="ltr"
-      className="relative md:mx-5 lg:mx-20"
+      className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
         slidesPerView={2}
+        spaceBetween={10}
         speed={900}
         autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
         breakpoints={{
           340: {
-            slidesPerView: 3,
+            slidesPerView: 2,
+            spaceBetween: 10,
           },
           440: {
-            slidesPerView: 3,
+            slidesPerView: 2,
+            spaceBetween: 10,
           },
           576: {
-            slidesPerView: 3,
+            slidesPerView: 2,
+            spaceBetween: 16,
           },
           // Tablet (768px and up)
           768: {
             slidesPerView: 3,
+            spaceBetween: 16,
           },
           // Large tablet (900px and up)
           900: {
             slidesPerView: 3,
+            spaceBetween: 20,
           },
           // Desktop (1024px and up)
           1024: {
             slidesPerView: 4,
+            spaceBetween: 20,
           },
           // Large desktop (1200px and up)
           1200: {
-            slidesPerView: 5,
+            slidesPerView: 4,
+            spaceBetween: 24,
           },
           // Extra large desktop (1400px and up)
           1400: {
-            slidesPerView: 6,
+            slidesPerView: 4,
+            spaceBetween: 24,
           }
           
         }}
@@ -104,7 +113,7 @@ const NewList = <T extends HasId>({
       </Swiper>
 
       <div
-        className={` md:block w-full absolute top-[40%] z-10 px-4  ${
+        className={` container  md:block w-full absolute top-[40%] z-10 px-4  ${
           isHovered
             ? "opacity-100 transition-opacity duration-300 ease-in-out"
             : "opacity-70 transition-opacity duration-300 ease-in-out"
