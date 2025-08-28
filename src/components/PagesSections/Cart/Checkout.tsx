@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/select";
 import getBranches from "@/lib/actions/getBranches";
 import { BranchesDto } from "@/types/branches";
+import { formater } from "@/lib/utils";
 
 const translations = {
   en: {
@@ -76,7 +77,7 @@ const translations = {
     branchError: "Please select a branch",
   },
   ar: {
-    checkout: "الدفع",
+    checkout: "طريقه الدفع",
     personalInfo: "المعلومات الشخصية",
     contactInfo: "معلومات الاتصال",
     shippingAddress: "عنوان الشحن",
@@ -307,7 +308,7 @@ export default function CheckoutForm() {
 
   return (
     <Card className="w-full max-w-2xl dark:bg-slate-900" dir={isRTL ? "rtl" : "ltr"}>
-      <CardHeader>
+      <CardHeader className="bg-green-400 text-white mb-5 text-center">
         <CardTitle>{t.checkout}</CardTitle>
       </CardHeader>
 
@@ -488,21 +489,22 @@ export default function CheckoutForm() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>{t.subtotal}</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>{formater.format(totalPrice)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span>{t.shipping}</span>
                   <span>{t.free}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between font-bold pt-2 border-t">
                   <span>{t.total}</span>
-                  <span className="text-lg">${totalPrice.toFixed(2)}</span>
+                  <span className="text-lg">{formater.format(totalPrice)}</span>
                 </div>
               </div>
             </div>
           </CardContent>
 
-          <CardFooter className="flex justify-center">
+          <CardFooter className="flex justify-center gap-4">
+
             
             <Button
               type="submit"
@@ -517,6 +519,15 @@ export default function CheckoutForm() {
               ) : (
                 t.placeOrder
               )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => removeAll()}
+              disabled={isSubmitting}
+            >
+              {t.clearCart}
             </Button>
           </CardFooter>
         </form>

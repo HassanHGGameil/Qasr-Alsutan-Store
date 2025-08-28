@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { ArrowRight, ChefHat, Clock, Star } from "lucide-react";
+import {  ChefHat, Clock, Star } from "lucide-react";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import DialogPopUp from "@/components/common/Dialog-PopUp/PopUp";
@@ -101,10 +101,10 @@ const HeroCard = () => {
                 className="flex items-center justify-center gap-2 px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-full transition-colors shadow-lg hover:shadow-orange-200 dark:hover:shadow-orange-900"
               >
                 <span>{locale === "en" ? "Order Now" : "اطلب الآن"}</span>
-                <ArrowRight className="w-5 h-5" />
+                {/* <ArrowRight className="w-5 h-5" /> */}
               </button>
               <button className="px-8 py-3 border-2 border-red-500 text-red-800 dark:text-yellow-400 font-semibold rounded-full transition-colors hover:bg-orange-50 dark:hover:bg-gray-700">
-                {locale === "en" ? "View Menu" : "عرض القائمة"}
+                {locale === "en" ? "Make A Booking" : "احجز في المطعم الان"}
               </button>
             </motion.div>
           </motion.div>

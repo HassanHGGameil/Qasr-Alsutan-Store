@@ -186,9 +186,9 @@ export default function CartHome() {
 
       {cartItems.length > 0 && (
         <CardFooter className="flex flex-col gap-3 pt-4">
-          <div className="flex justify-between w-full font-semibold">
-            <span>Subtotal:</span>
-            <span>${formater.format(subtotal)}</span>
+          <div className="flex justify-between w-full font-semibold dark:text-slate-800">
+                <span>{locale === "en" ? "Subtotal: ": "المجموع الجذئي :"}</span>
+            <span>{formater.format(subtotal)}</span>
           </div>
           <Button
             className="w-full bg-red-800 hover:bg-red-900 dark:text-white"

@@ -19,19 +19,18 @@ export default async function Home({ params }: PageProps) {
     isFeatured: isFeatured,
   });
 
-    const products = await getProducts({});
-
+  const products = await getProducts({});
 
   console.log("CATEGORIES", categories);
 
   return (
     <main>
       <HeroCard />
-            <ProductSlideClient products={products}  />
+      <ProductSlideClient products={products} />
 
       <CategoryClinet categories={categories} />
       <ProductClient />
-      <ProductSlideClient products={products}  />
+      <ProductSlideClient products={products} />
       <NewSection />
     </main>
   );
