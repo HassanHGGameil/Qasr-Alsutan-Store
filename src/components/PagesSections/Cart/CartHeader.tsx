@@ -10,7 +10,10 @@ const CartHeader = () => {
   return (
     <section>
       <div className="container  text-center my-5">
-        <Badge variant="outline" className="flex items-center gap-5 justify-center">
+        <Badge
+          variant="outline"
+          className="flex items-center gap-5 justify-center"
+        >
           <h1 className="text-center text-xl font-semibold py-5">
             {locale === "en" ? "Welcome In Your Cart" : "السلة الخاصة بك"}
           </h1>

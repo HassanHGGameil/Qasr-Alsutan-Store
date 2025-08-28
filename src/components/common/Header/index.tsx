@@ -9,7 +9,6 @@ import { Routes } from "@/constants/enums";
 import LocalSelect from "../LocaleSelect/LocalSelect";
 import { useLocale } from "next-intl";
 import Navbar from "./Navbar";
-import { Search } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Header = () => {
@@ -37,9 +36,6 @@ const Header = () => {
 
         <div className="hidden lg:block">
           <div className="  flex items-center gap-5">
-            <div className="cursor-pointer">
-              <Search />
-            </div>
 
             <LocalSelect defaultValue={locale} />
           </div>
