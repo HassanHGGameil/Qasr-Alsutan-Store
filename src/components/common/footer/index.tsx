@@ -1,20 +1,18 @@
-"use client";
-import { useTheme } from "next-themes";
 import Image from "next/image";
-import Link from "next/link";
 import { useLocale } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebookF,
   FaInstagram,
   FaChevronRight,
   FaTiktok,
+  FaWhatsapp,
+  FaYoutube,
 } from "react-icons/fa";
+
 import { ReactNode } from "react";
-
-import darklogo from "../../../../public/icons/qasr-alsutan-logo.png";
-import lightlogo from "../../../../public/icons/qasr-alsutan-logo.png";
-
+import markupLogo from "../../../../public/icons/markup-logo-2.png";
+import Link from "../Link";
+import FooterLogo from "./FooterLogo";
 
 type LocaleString = {
   en: string;
@@ -30,8 +28,8 @@ type FooterLinkItem = {
 type ContactInfo = {
   email: string;
   phone: string;
-  address: LocaleString;
-  hours: LocaleString;
+  address?: LocaleString;
+  hours?: LocaleString;
 };
 
 type SocialLink = {
@@ -48,6 +46,7 @@ type SocialLink = {
 type FooterContent = {
   description: LocaleString;
   links: FooterLinkItem[];
+  specialties: FooterLinkItem[];
   contact: ContactInfo;
 };
 
@@ -60,15 +59,22 @@ type ContactItemProps = {
 // Content
 const SOCIAL_LINKS: SocialLink[] = [
   {
+    name: "Youtube",
+    link: "https://www.facebook.com/profile.php?id=61574451836989",
+    icon: <FaYoutube size={14} />,
+    bgColor: "bg-[#1872F2]",
+    animation: { rotate: 10, scale: 1.1 },
+  },
+  {
     name: "Facebook",
-    link: "https://www.facebook.com/DrMohamedSherifOfficial",
+    link: "https://www.facebook.com/profile.php?id=61574451836989",
     icon: <FaFacebookF size={14} />,
     bgColor: "bg-[#1872F2]",
     animation: { rotate: 10, scale: 1.1 },
   },
   {
     name: "Instagram",
-    link: "https://www.instagram.com/drmohamedsherif",
+    link: "https://www.instagram.com/teteproducts",
     icon: <FaInstagram size={14} />,
     bgColor: "bg-gradient-to-tr from-[#833AB4] via-[#C13584] to-[#E1306C]",
     animation: { rotate: -10, scale: 1.1 },
@@ -76,8 +82,16 @@ const SOCIAL_LINKS: SocialLink[] = [
 
   {
     name: "Tiktok",
-    link: "https://www.facebook.com/DrMohamedSherifOfficial",
+    link: "https://www.tiktok.com/@tete.eg",
     icon: <FaTiktok size={14} />,
+    bgColor: "bg-[#222]",
+    animation: { rotate: 15, scale: 1.1 },
+  },
+
+  {
+    name: "Whatsup",
+    link: "`https://wa.me/+201070902710",
+    icon: <FaWhatsapp size={14} />,
     bgColor: "bg-[#222]",
     animation: { rotate: 15, scale: 1.1 },
   },
@@ -85,29 +99,42 @@ const SOCIAL_LINKS: SocialLink[] = [
 
 const FOOTER_CONTENT: FooterContent = {
   description: {
-    en: "Experience authentic Arabian cuisine in an enchanting palace atmosphere. Qasr Al Sultan brings you centuries-old recipes with modern culinary artistry.",
-    ar: "جرب المأكولات العربية الأصيلة في أجواء قصر ساحرة. يقدم لكم قصر السلطان وصفات تعود إلى قرون مع فنون الطهي الحديثة",
+    en: `Mansour Group for Sweets and Integrated Food Industries, 50 years of leadership, quality and integration.`,
+    ar: `مجموعة المنصور للحلويات والصناعات الغذائية المتكاملة، 50 عاما من الريادة والجودة والتكامل`,
   },
   links: [
-    { en: "Home", ar: "الرئيسية", href: "/" },
-    { en: "Menu", ar: "قائمة الطعام", href: "/menu" },
-    { en: "Gallery", ar: "معرض الصور", href: "/gallery" },
-    { en: "Reservations", ar: "الحجوزات", href: "/reservations" },
-    { en: "About Us", ar: "عن المطعم", href: "/about" },
+    { en: "Home", ar: "الرئسيه", href: "#" },
+    { en: "About", ar: "من نحن", href: "/about" },
+    { en: "Products", ar: "المنتجات", href: "/products" },
     { en: "Contact", ar: "اتصل بنا", href: "/contact" },
   ],
 
+  specialties: [
+    {
+      en: "Internal Medicine",
+      ar: "الطب الباطني",
+      href: "/specialties/internal",
+    },
+    {
+      en: "Preventive Care",
+      ar: "الرعاية الوقائية",
+      href: "/specialties/preventive",
+    },
+    {
+      en: "Chronic Disease",
+      ar: "الأمراض المزمنة",
+      href: "/specialties/chronic",
+    },
+    {
+      en: "Health Screening",
+      ar: "الفحص الصحي",
+      href: "/specialties/screening",
+    },
+  ],
+
   contact: {
-    email: "reservations@qasralsultan.com",
-    phone: "+966 12 345 6789",
-    address: {
-      en: "Al Tahlia Street, Riyadh 12345, Saudi Arabia",
-      ar: "شارع الطليعة، الرياض 12345، المملكة العربية السعودية",
-    },
-    hours: {
-      en: "Daily: 12PM - 12AM | Friday Brunch: 1PM-4PM",
-      ar: "يومياً: 12 ظهراً - 12 منتصف الليل | برنش الجمعة: 1-4 عصراً",
-    },
+    email: "info@mansoursweet.com",
+    phone: "+20502770996",
   },
 };
 
@@ -121,33 +148,25 @@ const FooterLink = ({
   locale: "en" | "ar";
   color?: string;
 }) => {
-  const linkHover = {
-    hover: {
-      x: locale === "ar" ? -6 : 6,
-      transition: { type: "spring", stiffness: 300 },
-    },
-  };
-
   return (
-    <motion.li whileHover="hover">
+    <div>
       <Link
         href={item.href}
-        className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 group text-base font-medium"
+        className="flex items-center text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-300 group text-base font-medium"
       >
-        <motion.span
+        <div
           className={`mr-3 rtl:mr-0 rtl:ml-3 text-${color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-          variants={linkHover}
         >
           <FaChevronRight size={10} className="rtl:rotate-180" />
-        </motion.span>
+        </div>
         {item[locale]}
       </Link>
-    </motion.li>
+    </div>
   );
 };
 
 const ContactItem = ({ label, value, href, additional }: ContactItemProps) => (
-  <motion.li className="flex items-start">
+  <div className="flex items-start">
     <div>
       <p className="text-xs text-gray-500 dark:text-blue-200 uppercase tracking-wider">
         {label}
@@ -155,7 +174,7 @@ const ContactItem = ({ label, value, href, additional }: ContactItemProps) => (
       {href ? (
         <Link
           href={href}
-          className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium text-base"
+          className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-300 font-medium text-base"
         >
           {value}
         </Link>
@@ -170,100 +189,48 @@ const ContactItem = ({ label, value, href, additional }: ContactItemProps) => (
         </p>
       )}
     </div>
-  </motion.li>
+  </div>
 );
 
 const Footer = () => {
-  const { resolvedTheme } = useTheme();
   const locale = useLocale() as "en" | "ar";
   const currentYear = new Date().getFullYear();
 
   return (
     <footer
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className="relative z-10 rounded-t-3xl shadow-lg bg-white dark:bg-blue-900/10 border-t border-gray-100 dark:border-blue-800/50"
+      className="relative z-10  rounded-t-3xl shadow-lg bg-white dark:bg-red-900/10 border-t border-gray-100 dark:border-red-800/50"
     >
       <div className="container  mx-auto relative">
-        <motion.div
-          className="grid grid-cols-1 gap-14 py-2 lg:py-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-150px" }}
-        >
+        <div className="grid grid-cols-1 gap-14 py-2 lg:py-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {/* Brand Column */}
-          <motion.div className="space-y-8 xl:col-span-2 flex flex-col items-center md:items-start">
-            <Link
-              href="/"
-              className="inline-block"
-              aria-label="Dr. Mohamed Sherif Clinic"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={resolvedTheme}
-                  initial={{ opacity: 0, rotate: -5 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 5 }}
-                  transition={{ duration: 0.4 }}
-                  className="w-28 h-28 bg-white dark:bg-blue-900/20 rounded-2xl p-2 shadow-xl dark:shadow-blue-900/30 flex items-center justify-center border border-gray-200 dark:border-blue-800/50 mx-auto md:mx-0"
-                  whileHover={{
-                    y: -5,
-                    rotate: 2,
-                    transition: { type: "spring", stiffness: 300 },
-                  }}
-                >
-                  <Image
-                    src={resolvedTheme === "dark" ? lightlogo : darklogo}
-                    alt="Dr. Mohamed Sherif Logo"
-                    className="w-full transition-all duration-700 hover:rotate-6 hover:scale-105"
-                    width={112}
-                    height={112}
-                    priority
-                    loading="eager"
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </Link>
+          <div className="space-y-8 xl:col-span-2 flex flex-col items-center md:items-start">
+            <FooterLogo />
 
-            <motion.p
-              className="text-gray-600 dark:text-blue-100 leading-relaxed text-md max-w-md text-center lg:text-start md:text-left"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              viewport={{ once: true }}
-            >
+            <div className="text-gray-600 dark:text-blue-100 leading-relaxed text-md max-w-md text-center lg:text-start md:text-left">
               {FOOTER_CONTENT.description[locale]}
-            </motion.p>
+            </div>
 
-            <motion.div
-              className="flex space-x-3 rtl:space-x-reverse justify-center md:justify-start"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              viewport={{ once: true }}
-            >
+            <div className="flex space-x-3 rtl:space-x-reverse justify-center md:justify-start ">
               {SOCIAL_LINKS.map((social) => (
-                <motion.a
+                <Link
                   key={social.name}
                   href={social.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className={`w-10 h-10 flex items-center justify-center rounded-xl bg-slate-700 dark:bg-blue-900/20 text-white hover:text-white transition-all duration-300 ${social.bgColor} shadow-sm hover:shadow-md border border-gray-200 dark:border-blue-800/50`}
-                  whileHover="hover"
-                  whileTap="tap"
+                  className={`w-10 h-10 flex items-center justify-center rounded-xl bg-slate-700 dark:bg-blue-900/20 text-white hover:bg-orange-600 hover:text-white transition-all duration-300 ${social.bgColor} shadow-sm hover:shadow-md border border-gray-200 dark:border-blue-800/50`}
                 >
-                  <motion.div whileHover={social.animation}>
-                    {social.icon}
-                  </motion.div>
-                </motion.a>
+                  <div>{social.icon}</div>
+                </Link>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Quick Links */}
-          <motion.div className="space-y-8">
+          <div className="space-y-8">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="w-2.5 h-2.5 bg-blue-500 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
+              <span className="w-2.5 h-2.5 bg-orange-500 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
               {locale === "en" ? "Quick Links" : "روابط سريعة"}
             </h3>
             <ul className="space-y-4">
@@ -276,12 +243,12 @@ const Footer = () => {
                 />
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contact Info */}
-          <motion.div className="space-y-8">
+          <div className="space-y-8">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="w-2.5 h-2.5 bg-blue-300 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
+              <span className="w-2.5 h-2.5 bg-orange-300 rounded-full mr-3 rtl:mr-0 rtl:ml-3"></span>
               {locale === "en" ? "Contact Us" : "اتصل بنا"}
             </h3>
             <ul className="space-y-5">
@@ -296,43 +263,48 @@ const Footer = () => {
                 href={`tel:${FOOTER_CONTENT.contact.phone.replace(/\D/g, "")}`}
               />
             </ul>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Copyright Section */}
-        <motion.div
-          className="border-t border-gray-200 dark:border-blue-800/50 py-8 flex flex-col md:flex-row justify-between items-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div className="border-t border-gray-200 dark:border-red-800/50 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-gray-500 dark:text-blue-200 text-sm">
-            &copy; {currentYear} Dr. Mohamed Sherif{" "}
-            {locale === "en" ? "| All rights reserved" : "| جميع الحقوق محفوظة"}
+            <Link
+              href={"https://www.markup.vip"}
+              target="_blnk"
+              className="text-gray-500 dark:text-green-200 text-[12px]  lg:text-sm flex items-center "
+            >
+              <div className="bg-blue-900 w-8 h-8 rounded-full  flex items-center justify-center mx-2 shadow-md">
+                <Image
+                  src={markupLogo}
+                  alt="Markup Agency"
+                  className=" transition-all w-full duration-700 hover:rotate-6 hover:scale-105"
+                  width={120}
+                  height={120}
+                  priority
+                  loading="eager"
+                />
+              </div>
+              &copy; {currentYear} MarkUP Agency{" "}
+              {locale === "en" ? "All rights reserved." : "جميع الحقوق محفوظة."}
+            </Link>
           </div>
 
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             <Link
               href="/privacy"
-              className="text-gray-500 dark:text-blue-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 text-sm"
+              className="text-gray-500 dark:text-blue-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-300 text-sm"
             >
               {locale === "en" ? "Privacy Policy" : "سياسة الخصوصية"}
             </Link>
             <Link
               href="/terms"
-              className="text-gray-500 dark:text-blue-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 text-sm"
+              className="text-gray-500 dark:text-blue-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-300 text-sm"
             >
               {locale === "en" ? "Terms of Service" : "شروط الخدمة"}
             </Link>
-            <Link
-              href="/medical-ethics"
-              className="text-gray-500 dark:text-blue-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 text-sm"
-            >
-              {locale === "en" ? "Medical Ethics" : "أخلاقيات الطب"}
-            </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </footer>
   );

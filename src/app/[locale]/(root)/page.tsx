@@ -1,7 +1,6 @@
-import CategoryClinet from "@/components/PagesSections/Home/Categories/CategoryClient";
+import FilterCategoryProduct from "@/components/PagesSections/Home/FilterCategoryProduct/FilterCategoryProduct";
 import HeroCard from "@/components/PagesSections/Home/Hero/HeroCard";
 import NewSection from "@/components/PagesSections/Home/NewSection/NewSection";
-import ProductClient from "@/components/PagesSections/Home/Products/Product/ProductClient";
 import ProductSlideClient from "@/components/PagesSections/Home/Products/ProductSlides/ProductSlideClient";
 import getCategories from "@/lib/actions/getCategories";
 import getProducts from "@/lib/actions/getProducts";
@@ -19,18 +18,24 @@ export default async function Home({ params }: PageProps) {
     isFeatured: isFeatured,
   });
 
+  const sortedCategories = categories.sort((a, b) => a.position - b.position);
+
   const products = await getProducts({});
+
+    const sortedProducts = products.sort((a, b) => a.position - b.position);
+
 
   console.log("CATEGORIES", categories);
 
   return (
-    <main>
+    <main className="">
       <HeroCard />
       <ProductSlideClient products={products} />
 
-      <CategoryClinet categories={categories} />
-      <ProductClient />
-      <ProductSlideClient products={products} />
+      <FilterCategoryProduct
+        categories={sortedCategories.reverse()}
+        products={sortedProducts}
+      />
       <NewSection />
     </main>
   );

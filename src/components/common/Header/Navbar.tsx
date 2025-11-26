@@ -22,15 +22,32 @@ const NAV_LINKS = [
   {
     id: crypto.randomUUID(),
     titleEn: "Offers",
-    titleAr: "عروض قصر لسلطان",
-    href: Routes.COURSES,
+    titleAr: "عروض",
+    href: Routes.OFFERS,
   },
+
   {
     id: crypto.randomUUID(),
-    titleEn: "Main Course",
-    titleAr: "الاطباق الرئسيه",
+    titleEn: "Menu",
+    titleAr: "المنيو",
+    href: Routes.MENU,
+  },
+ 
+  
+  {
+    id: crypto.randomUUID(),
+    titleEn: "Qasr Alsultan Butcher",
+    titleAr: "جزاره قصر السلطان",
     href: Routes.ABOUT,
   },
+
+  {
+    id: crypto.randomUUID(),
+    titleEn: "Branches",
+    titleAr: "الفروع",
+    href: Routes.BRANCHES,
+  },
+
 
   {
     id: crypto.randomUUID(),
@@ -112,7 +129,7 @@ const Navbar = () => {
               href={`/${link.href}`}
               onClick={closeMenu}
               className={cn(
-                "text-slate-800 dark:text-white hover:text-gray-300 dark:hover:text-green-600",
+                "text-slate-800 dark:text-white hover:text-primary dark:hover:text-primary",
                 "transition-colors duration-200 font-medium",
                 "relative dark:after:bg-green-600",
                 "after:transition-all after:duration-300 after:w-0 hover:after:w-full",

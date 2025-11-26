@@ -19,7 +19,7 @@ const ProductSlideClient = ({ products }: ProductClientProps) => {
   const locale = useLocale();
 
   return (
-    <section className="container text-center   rounded-lg py-10 my-10">
+    <section className="container text-center   rounded-lg py-10 my-10 ]">
       <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-red-100 dark:from-amber-900/30 dark:to-red-900/30 px-4 py-2 rounded-full mb-4">
         <Trophy className="h-5 w-5 mx-2 text-amber-600 dark:text-amber-400" />
         <span className="text-sm font-medium text-amber-600 dark:text-amber-400">

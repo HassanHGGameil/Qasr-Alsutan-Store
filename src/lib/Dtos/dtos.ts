@@ -112,6 +112,7 @@ export interface CategoryDto {
 
   price: number;
   quantity: number;
+  position: number;
 
   categoryId: string;
   productDetailsId: string;

@@ -1,5 +1,5 @@
 "use client";
-import { Minus, Plus, Loader2, ShoppingCart } from "lucide-react";
+import { Minus, Plus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,8 @@ import { formater } from "@/lib/utils";
 import { MdDelete } from "react-icons/md";
 import { useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+
+import bag from "../../../../../public/icons/Qasr-Alsultan-Bag.png";
 
 export default function CartHome() {
   const { cartItems, removeFromCart, updateCartQuantity } = useCart();
@@ -66,9 +68,19 @@ export default function CartHome() {
       <CardContent className="hidden lg:block p-0 ">
         {cartItems.length === 0 ? (
           <div className="flex flex-col justify-center items-center gap-4 p-6 text-center text-muted-foreground">
-            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center">
-              <ShoppingCart className="w-12 h-12 text-muted-foreground" />
+            <div className="relative w-full h-full aspect-[4/3] m-5">
+              <Image
+                src={bag}
+                alt={"bag"}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={false}
+              />
             </div>
+            {/* <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center">
+              <ShoppingCart className="w-12 h-12 text-muted-foreground" />
+            </div> */}
             <span className="">
               {locale === "en" ? "Your cart is empty" : "العربه فارغه"}
             </span>
@@ -187,7 +199,7 @@ export default function CartHome() {
       {cartItems.length > 0 && (
         <CardFooter className="flex flex-col gap-3 pt-4">
           <div className="flex justify-between w-full font-semibold dark:text-slate-800">
-                <span>{locale === "en" ? "Subtotal: ": "المجموع الجذئي :"}</span>
+            <span>{locale === "en" ? "Subtotal: " : "المجموع الجذئي :"}</span>
             <span>{formater.format(subtotal)}</span>
           </div>
           <Button

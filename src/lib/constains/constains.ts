@@ -1,2 +1,2 @@
-export const STORE = `https://qasr-alsultan-dashboard.vercel.app` ;
-// export const STORE = `http://localhost:3000`;
+// export const STORE = `https://qasr-alsultan-dashboard.vercel.app` ;
+export const STORE = `http://markupagency.net`;

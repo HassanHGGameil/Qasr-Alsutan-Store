@@ -26,10 +26,12 @@ const cartSlice = createSlice({
     addItem: (state, action: PayloadAction<CartItem>) => {
       const newItem = action.payload;
       const normalizedProductItems = newItem.productItems || [];
-      
-      const existingItem = state.items.find(item => 
-        item.id === newItem.id && 
-        JSON.stringify(item.productItems || []) === JSON.stringify(normalizedProductItems)
+
+      const existingItem = state.items.find(
+        (item) =>
+          item.id === newItem.id &&
+          JSON.stringify(item.productItems || []) ===
+            JSON.stringify(normalizedProductItems)
       );
 
       if (existingItem) {
@@ -38,18 +40,20 @@ const cartSlice = createSlice({
         state.items.push({
           ...newItem,
           quantity: newItem.quantity || 1,
-          productItems: normalizedProductItems
+          productItems: normalizedProductItems,
         });
       }
     },
     removeItem: (state, action: PayloadAction<{ id: string }>) => {
-      state.items = state.items.filter(item => item.id !== action.payload.id);
+      state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
     decreaseQuantity: (state, action: PayloadAction<{ id: string }>) => {
-      const item = state.items.find(item => item.id === action.payload.id);
+      const item = state.items.find((item) => item.id === action.payload.id);
       if (item) {
         if (item.quantity <= 1) {
-          state.items = state.items.filter(item => item.id !== action.payload.id);
+          state.items = state.items.filter(
+            (item) => item.id !== action.payload.id
+          );
         } else {
           item.quantity -= 1;
         }
@@ -59,7 +63,7 @@ const cartSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; quantity: number }>
     ) => {
-      const item = state.items.find(item => item.id === action.payload.id);
+      const item = state.items.find((item) => item.id === action.payload.id);
       if (item) {
         item.quantity = Math.max(1, action.payload.quantity); // Ensure quantity doesn't go below 1
       }

@@ -2,14 +2,18 @@
 
 
 export type THero = {
+    id: string;
   slug: string;
-    nameEn: string;
-    nameAr: string;
-    titleEn: string;
-    titleAr: string;
-    subtitleEn: string;
-    subtitleAr: string;
-    bgImage: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    imageUrl: any;
+  titleEn: string;
+  titleAr: string;
+  subtitleEn: string;
+  subtitleAr: string;
+  descEn: string;
+  descAr: string;
+  heroImages: { url: string }[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bgOne?: any | null; // <-- FIXED
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bgTwo?: any | null; // If exist
 };

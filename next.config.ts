@@ -1,21 +1,35 @@
+
 import createNextIntlPlugin from "next-intl/plugin";
+import type { NextConfig } from 'next';
 
 const withNextIntl = createNextIntlPlugin();
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
+  output: 'standalone',
+  // Ensure proper trailing slashes
+  trailingSlash: false,
+
   images: {
     remotePatterns: [
       {
+        protocol: 'https',
         hostname: "res.cloudinary.com",
-        pathname: "/**", 
+        pathname: "/**",
+      },
+      {
+        protocol: 'https',
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: 'https',
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
       },
     ],
-    domains: [
-      "lh3.googleusercontent.com", 
-      "avatars.githubusercontent.com",
-    ],
   },
+
+
 };
 
 export default withNextIntl(nextConfig);

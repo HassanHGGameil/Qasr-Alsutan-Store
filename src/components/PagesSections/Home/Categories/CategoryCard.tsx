@@ -6,70 +6,85 @@ import React from "react";
 
 interface CategoryCardProps {
   categoryItem: CategoryDto;
-  onClick?: () => void;
-  isActive?: boolean;
+  selectedCategory: string | number | null;
+  onSelect: (id: string | number) => void;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   categoryItem,
-  onClick,
-  isActive = false,
+  selectedCategory,
+  onSelect,
 }) => {
   const { id, nameEn, nameAr, imageUrl } = categoryItem;
   const locale = useLocale();
   const name = locale === "en" ? nameEn : nameAr;
 
+  const isActive = selectedCategory === id;
+
   return (
     <div
-      key={id}
-      className={`flex flex-col items-center bg-yellow-100 shadow-md mx-2 my-2 p-2 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
-        ${
-          isActive
-            ? "scale-105 opacity-100"
-            : "opacity-90 hover:scale-105 hover:opacity-100"
-        }
-        group/category`}
-      onClick={onClick}
+      onClick={() => onSelect(id)}
+      onKeyDown={(e) => e.key === "Enter" && onSelect(id)}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       aria-label={`Select ${name} category`}
+      className={`
+        flex flex-col items-center gap-2 py-4 
+
+        cursor-pointer select-none
+        transition-all duration-250 ease-out
+
+        ${isActive ? "scale-[1.05]" : "hover:scale-[1.04] active:scale-[0.97]"}
+
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-red-900
+      `}
     >
+      {/* Card Container */}
       <div
-        className={`relative h-16 w-16 lg:h-24 lg:w-24 rounded-full overflow-hidden shadow-lg mb-3 transition-all duration-300
-          ${
-            isActive
-              ? "ring-4 ring-primary-500"
-              : "ring-2 ring-gray-100 hover:ring-primary-300"
-          }`}
+        className={`
+          relative
+          h-[85px] w-[85px] sm:h-[100px] sm:w-[100px]
+          rounded-3xl overflow-hidden
+
+          shadow-[0px_4px_10px_rgba(0,0,0,0.08)]
+          bg-white dark:bg-gray-800
+
+          transition-all duration-300
+
+          /* Ring when selected */
+          ${isActive ? "ring-2 ring-red-800" : ""}
+        `}
       >
         <Image
           src={imageUrl}
           alt={name}
           fill
-          className="object-cover transition-transform duration-500 group-hover/category:scale-110"
-          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-          loading="lazy" // Better performance
+          className="
+            object-cover
+            transition-transform duration-500 ease-out
+            hover:scale-110
+          "
+          loading="lazy"
         />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover/category:opacity-100 transition-opacity duration-300" />
       </div>
 
-      <div className="text-center">
-        <h3
-          className={`text-[12px] font-semibold transition-colors duration-300 line-clamp-1
-            ${
-              isActive
-                ? "text-primary-600"
-                : "text-gray-700 group-hover/category:text-primary-500"
-            }`}
-        >
-          {name}
-        </h3>
-      </div>
+      {/* Text */}
+      <span
+        className={`
+          text-xs sm:text-sm font-semibold tracking-wide text-center
+          transition-colors duration-200
 
+          ${isActive
+            ? "text-primary-600 dark:text-primary-400"
+            : "text-gray-800 dark:text-gray-200"}
+        `}
+      >
+        {name}
+      </span>
+
+      {/* Active Indicator (tiny dot) */}
       {isActive && (
-        <div className="mt-2 w-6 h-1 bg-primary-500 rounded-full animate-pulse" />
+        <div className="w-2 h-2 rounded-full bg-primary-500" />
       )}
     </div>
   );

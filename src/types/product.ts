@@ -1,5 +1,5 @@
 type TProduct = {
-  id:string;
+  id: string;
   slugEn: string;
   slugAr: string;
   titleEn: string;
@@ -10,6 +10,7 @@ type TProduct = {
   descriptionAr: string;
   price: number;
   offer: number;
+  position: number;
   offerPrice: number;
   quantity: number;
   categoriesId: string;
@@ -21,7 +22,6 @@ type TProduct = {
   isArchived: boolean;
 };
 export default TProduct;
-
 
 export interface IProductAddions {
   id: string;
@@ -35,10 +35,7 @@ export interface IProductAddions {
   colorId: string;
   productItem: IProductItem; // Array of package items (max 10 items)
   imageUrl: string;
- 
 }
-
-
 
 export interface IProductItem {
   id: string;
@@ -48,5 +45,4 @@ export interface IProductItem {
   quantity?: number; // Arabic name of the package item
   imageUrl: string; // URL of the package item image
   productCategoryId: string;
-
 }

@@ -13,6 +13,8 @@ const UserCart = () => {
       return <EmptyCart />;
     }
 
+    console.log("cartItems",cartItems)
+
     
   return (
     <section>
