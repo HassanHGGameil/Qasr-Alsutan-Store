@@ -4,22 +4,21 @@ import { notFound } from "next/navigation";
 import { Locale, routing } from "@/i18n/routing";
 import "./globals.css";
 
-// import { Directions, Languages } from "@/constants/enums";
 import { Metadata } from "next";
 import { ToasterProvider } from "@/providers/ToastProvider/ToasterProvider";
 import { ProvidersTheme } from "@/providers/ThemeProvider";
 
 import localfont from "next/font/local";
+// import { NextAuthProvider } from "@/providers/SessionProvider/SessionProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
 
 const myFont = localfont({ src: "../../fonts/Cairo-Medium.ttf" });
 
-
 export const metadata: Metadata = {
   // metadataBase: new URL("https://markup.vip"),
   title: {
-    default: "Qasr Alsutan",
-    template: "%s | Qasr Alsutan",
+    default: "Qasr Alsultan Dashboard",
+    template: "%s | Mansour",
   },
   icons: {
     icon: [
@@ -47,25 +46,21 @@ export default async function LocaleLayout({
   // side is the easiest way to get started
   const messages = await getMessages();
 
-  const currentLocale = locale ?? "ar"; // default to Arabic
+  const currentLocale = locale ?? "en"; // default to Arabic
 
   return (
     <html
       lang={currentLocale}
-      dir={currentLocale === "ar" ? "rtl" : "ltr"}
+      dir={currentLocale === "en" ? "ltr" : "rtl"}
       suppressHydrationWarning
     >
       <body className={`bg-[#FBFBFB] dark:bg-slate-900 ${myFont.className}`}>
-        <NextIntlClientProvider messages={messages}>
           <ReduxProvider>
+          <NextIntlClientProvider messages={messages}>
             <ToasterProvider />
-            <ProvidersTheme>
-              {/* <ReduxProvider> */}
-              {children}
-              {/* </ReduxProvider> */}
-            </ProvidersTheme>
+            <ProvidersTheme>{children}</ProvidersTheme>
+          </NextIntlClientProvider>
           </ReduxProvider>
-        </NextIntlClientProvider>
       </body>
     </html>
   );
