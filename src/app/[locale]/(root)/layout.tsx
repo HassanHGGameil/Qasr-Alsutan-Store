@@ -8,8 +8,8 @@ interface IAdmin {
 }
 
 const MainLayout = async ({ children }: IAdmin) => {
-  
 
+   
   return (
     <>
       <main className="">

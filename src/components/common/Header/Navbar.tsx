@@ -13,49 +13,43 @@ import BasketCart from "@/components/Ecommerce/BasketCart/BasketCart";
 
 const NAV_LINKS = [
   {
-    id: crypto.randomUUID(),
+    id: "nav-home",
     titleEn: "Home",
     titleAr: "الرئسيه",
     href: Routes.ROOT,
   },
-
   {
-    id: crypto.randomUUID(),
+    id: "nav-offers",
     titleEn: "Offers",
     titleAr: "عروض",
     href: Routes.OFFERS,
   },
-
   {
-    id: crypto.randomUUID(),
+    id: "nav-menu",
     titleEn: "Menu",
     titleAr: "المنيو",
     href: Routes.MENU,
   },
- 
-  
   {
-    id: crypto.randomUUID(),
+    id: "nav-butcher",
     titleEn: "Qasr Alsultan Butcher",
     titleAr: "جزاره قصر السلطان",
     href: Routes.ABOUT,
   },
-
   {
-    id: crypto.randomUUID(),
+    id: "nav-branches",
     titleEn: "Branches",
     titleAr: "الفروع",
     href: Routes.BRANCHES,
   },
-
-
   {
-    id: crypto.randomUUID(),
+    id: "nav-about",
     titleEn: "About QasrAlsutan",
     titleAr: "عن فصر السلطان",
     href: Routes.CONTACT,
   },
 ];
+
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
